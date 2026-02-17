@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hospital Management System{% endblock %}</title>
+
+    <!-- Base styles - linked from external file -->
+    <link rel="stylesheet" href="/static/css/base.css">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <div class="app-shell">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <span class="logo-mark">🏥</span>
+                <span class="logo-text">Hospital Management System</span>
+            </div>
+
+            <nav class="nav-main">
+                <a href="/" class="nav-item {% block active_dashboard %}{% endblock %}">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+                <a href="/wards" class="nav-item {% block active_wards %}{% endblock %}">
+                    <span class="nav-icon">🏥</span>
+                    <span class="nav-label">Wards</span>
+                </a>
+                <a href="/teams" class="nav-item {% block active_teams %}{% endblock %}">
+                    <span class="nav-icon">👨‍⚕️</span>
+                    <span class="nav-label">Teams</span>
+                </a>
+                <a href="/patients" class="nav-item {% block active_patients %}{% endblock %}">
+                    <span class="nav-icon">🧍‍♂️</span>
+                    <span class="nav-label">Patients</span>
+                </a>
+                <a href="/treatments" class="nav-item {% block active_treatments %}{% endblock %}">
+                    <span class="nav-icon">💊</span>
+                    <span class="nav-label">Treatments</span>
+                </a>
+                <a href="/reports" class="nav-item {% block active_reports %}{% endblock %}">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Reports</span>
+                </a>
+            </nav>
+
+            <div class="nav-secondary">
+                <a href="/notifications" class="nav-item {% block active_notifications %}{% endblock %}">
+                    <span class="nav-icon">🔔</span>
+                    <span class="nav-label">Notifications</span>
+                </a>
+                <a href="/profile" class="nav-item {% block active_profile %}{% endblock %}">
+                    <span class="nav-icon">🛡️</span>
+                    <span class="nav-label">Profile & security</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN AREA -->
+        <main class="main-area">
+            <!-- TOP BAR -->
+            <header class="top-bar">
+                <div class="top-left">
+                    <div class="top-left-row">
+                        <!-- mobile menu button -->
+                        <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+
+                        <div>
+                            {% block header %}
+                            <h1 class="page-title">{% block page_title %}Hospital Management{% endblock %}</h1>
+                            <p class="page-subtitle">{% block page_subtitle %}Manage your hospital efficiently{%
+                                endblock %}</p>
+                            {% endblock %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="top-actions">
+                    {% block top_actions %}
+                    <a href="/wards" class="shortcut-btn">View wards</a>
+                    <a href="/teams" class="shortcut-btn">View teams</a>
+                    <a href="/patients" class="shortcut-btn">Add patient</a>
+                    <a href="/treatments" class="shortcut-btn">Record treatment</a>
+
+                    <div class="settings-wrapper">
+                        <button class="settings-btn" id="settingsToggle">
+                            Settings ▾
+                        </button>
+                        <div class="settings-menu" id="settingsMenu">
+                            <button class="settings-item" id="lightModeToggle">Dark mode</button>
+                            <button class="settings-item" onclick="location.href='/notifications'">
+                                Notification settings
+                            </button>
+                            <button class="settings-item" onclick="location.href='/profile'">
+                                Profile & security
+                            </button>
+                        </div>
+                    </div>
+                    {% endblock %}
+                </div>
+            </header>
+
+            <!-- MAIN CONTENT -->
+            {% block content %}{% endblock %}
+
+            <!-- FOOTER -->
+            <footer class="site-footer">
+                <div class="footer-column">
+                    <h4>MyHospital</h4>
+                    <p>Simple hospital management for wards, teams, and patients.</p>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Navigation</h4>
+                    <a href="/">Dashboard</a>
+                    <a href="/wards">Wards</a>
+                    <a href="/teams">Teams</a>
+                    <a href="/patients">Patients</a>
+                    <a href="/treatments">Treatments</a>
+                    <a href="/reports">Reports</a>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Support</h4>
+                    <a href="#">Help centre</a>
+                    <a href="#">Contact admin</a>
+                </div>
+
+                <div class="footer-column footer-social">
+                    <h4>Connect</h4>
+                    <div class="social-buttons">
+                        <a href="#" class="social-circle fb" aria-label="Facebook">
+                            <svg viewBox="0 0 24 24" class="social-icon">
+                                <path d="M13 3h4v3h-3v3h3v3h-3v9h-3v-9H8v-3h3V6a3 3 0 0 1 3-3z" />
+                            </svg>
+                        </a>
+                        <a href="#" class="social-circle x" aria-label="X">
+                            <svg viewBox="0 0 24 24" class="social-icon">
+                                <path d="M5 4l6.5 7.1L5 20h3l4.5-5.3L17 20h3l-6.5-7.2L20 4h-3l-4 4.9L9 4H5z" />
+                            </svg>
+                        </a>
+                        <a href="#" class="social-circle ig" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24" class="social-icon">
+                                <path
+                                    d="M8 3h8a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H8zm4 2.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zm4.75-2.75a1 1 0 1 1-1 1 1 1 0 0 1 1-1z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    © 2026 All rights reserved | MyHospital
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/theme.js"></script>
+    <script src="/static/js/base.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

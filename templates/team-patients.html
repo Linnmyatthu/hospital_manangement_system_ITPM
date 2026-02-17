@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block title %}Team patients | MyHospital{% endblock %}
+
+{% block active_teams %}active{% endblock %}
+
+{% block header_content %}
+<a href="/teams" class="back-link">← Back to teams</a>
+{% endblock %}
+
+{% block page_title %}Acute Medical Team A – Patient list{% endblock %}
+
+{% block page_subtitle %}
+All patients currently under the care of Dr. Riley Morgan and team.
+{% endblock %}
+
+{% block top_actions %}
+<span class="status-pill oncall">On‑call today</span>
+{{ super() }}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/team-patients.css">
+{% endblock %}
+
+{% block content %}
+<!-- TEAM INFO + STATS -->
+<section class="info-grid">
+  <article class="card info-card">
+    <h2>Team information</h2>
+    <div class="info-row">
+      <span class="info-label">Lead consultant</span>
+      <span class="info-value">Dr. Riley Morgan</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Specialty</span>
+      <span class="info-value">Acute Medicine</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Primary ward</span>
+      <span class="info-value">AMU (Acute Medical Unit)</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Team pager</span>
+      <span class="info-value">2301</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">On‑call status</span>
+      <span class="badge-inline oncall">On‑call</span>
+    </div>
+  </article>
+
+  <article class="card stats-card">
+    <h2>Current patients</h2>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-label">Total</span>
+        <span class="stat-value">10</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">New today</span>
+        <span class="stat-value">2</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Ready for discharge</span>
+        <span class="stat-value">2</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Avg length of stay</span>
+        <span class="stat-value">3.1 days</span>
+      </div>
+    </div>
+  </article>
+
+  <article class="card team-members-card">
+    <h2>Team members</h2>
+    <div class="member-row">
+      <span class="member-name">Dr. Aisha Patel</span>
+      <span class="member-badge">ST7 Reg</span>
+    </div>
+    <div class="member-row">
+      <span class="member-name">Dr. James Lee</span>
+      <span class="member-badge">FY2</span>
+    </div>
+    <div class="member-row">
+      <span class="member-name">Sister Emily Clarke</span>
+      <span class="member-badge">Band 7</span>
+    </div>
+    <a href="/teams" class="text-link">View full team roster</a>
+  </article>
+</section>
+
+<!-- PATIENT TABLE -->
+<section class="table-card">
+  <div class="table-card-header">
+    <div>
+      <h2>Team patient list</h2>
+      <p>Search by patient name, age, ward, or diagnosis to quickly locate records.</p>
+    </div>
+
+    <div class="table-actions">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="patientSearch" placeholder="Search by name, age, ward or diagnosis..."
+          autocomplete="off" />
+      </div>
+
+      <select id="statusFilter" class="status-filter">
+        <option value="all">All statuses</option>
+        <option value="Active">Active</option>
+        <option value="Ready for discharge">Ready for discharge</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="table-scroll">
+    <table class="data-table" id="teamPatientsTable">
+      <thead>
+        <tr>
+          <th>Patient name</th>
+          <th>Age</th>
+          <th>Sex</th>
+          <th>Ward / Bed</th>
+          <th>Primary diagnosis</th>
+          <th>Admitted</th>
+          <th>Length of stay</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>James Carter</td>
+          <td>68</td>
+          <td>M</td>
+          <td>AMU – Bay 2 Bed 3</td>
+          <td>Community‑acquired pneumonia</td>
+          <td>11 Feb 2026</td>
+          <td>0 days</td>
+          <td><span class="badge active">Active</span></td>
+        </tr>
+        <tr>
+          <td>Sarah Johnson</td>
+          <td>54</td>
+          <td>F</td>
+          <td>AMU – Bay 4 Bed 1</td>
+          <td>Sepsis of unknown origin</td>
+          <td>11 Feb 2026</td>
+          <td>0 days</td>
+          <td><span class="badge active">Active</span></td>
+        </tr>
+        <tr>
+          <td>Mohammed Ali</td>
+          <td>71</td>
+          <td>M</td>
+          <td>AMU – Side‑room 1</td>
+          <td>Acute kidney injury</td>
+          <td>10 Feb 2026</td>
+          <td>1 day</td>
+          <td><span class="badge active">Active</span></td>
+        </tr>
+        <tr>
+          <td>Emily Brown</td>
+          <td>39</td>
+          <td>F</td>
+          <td>AMU – Bay 1 Bed 5</td>
+          <td>Diabetic ketoacidosis</td>
+          <td>09 Feb 2026</td>
+          <td>2 days</td>
+          <td><span class="badge ready">Ready for discharge</span></td>
+        </tr>
+        <tr>
+          <td>David Wilson</td>
+          <td>82</td>
+          <td>M</td>
+          <td>AMU – Bay 5 Bed 2</td>
+          <td>Heart failure exacerbation</td>
+          <td>08 Feb 2026</td>
+          <td>3 days</td>
+          <td><span class="badge active">Active</span></td>
+        </tr>
+        <tr>
+          <td>Olivia Taylor</td>
+          <td>61</td>
+          <td>F</td>
+          <td>AMU – Bay 3 Bed 4</td>
+          <td>Acute COPD exacerbation</td>
+          <td>08 Feb 2026</td>
+          <td>3 days</td>
+          <td><span class="badge ready">Ready for discharge</span></td>
+        </tr>
+        <tr>
+          <td>George Harris</td>
+          <td>76</td>
+          <td>M</td>
+          <td>AMU – Bay 6 Bed 1</td>
+          <td>Stroke (left MCA)</td>
+          <td>07 Feb 2026</td>
+          <td>4 days</td>
+          <td><span class="badge active">Active</span></td>
+        </tr>
+        <tr>
+          <td>Lisa Martin</td>
+          <td>48</td>
+          <td>F</td>
+          <td>AMU – Bay 2 Bed 5</td>
+          <td>Pulmonary embolism</td>
+          <td>06 Feb 2026</td>
+          <td>5 days</td>
+          <td><span class="badge active">Active</span></td>
+        </tr>
+        <tr>
+          <td>Robert Thompson</td>
+          <td>55</td>
+          <td>M</td>
+          <td>AMU – Bay 4 Bed 3</td>
+          <td>Acute coronary syndrome</td>
+          <td>06 Feb 2026</td>
+          <td>5 days</td>
+          <td><span class="badge active">Active</span></td>
+        </tr>
+        <tr>
+          <td>Patricia White</td>
+          <td>66</td>
+          <td>F</td>
+          <td>AMU – Bay 1 Bed 2</td>
+          <td>Cellulitis (left leg)</td>
+          <td>05 Feb 2026</td>
+          <td>6 days</td>
+          <td><span class="badge active">Active</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="no-results" id="patientsNoResults">
+      No patients match your search or filter criteria.
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/team-patients.js"></script>
+{% endblock %}

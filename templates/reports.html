@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}Reports | MyHospital{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/reports.css">
+{% endblock %}
+
+{% block active_reports %}active{% endblock %}
+
+{% block page_title %}Reports & Analytics{% endblock %}
+
+{% block page_subtitle %}View hospital performance metrics, occupancy trends, and clinical outcomes.{% endblock %}
+
+{% block top_actions %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<!-- TIME FILTER SECTION - Below page title -->
+<section class="time-filter-section">
+  <div class="time-filter-container">
+    <select id="reportPeriod" class="period-select">
+      <option value="today">Today</option>
+      <option value="week" selected>This week</option>
+      <option value="month">This month</option>
+      <option value="year">This year</option>
+    </select>
+  </div>
+</section>
+
+<!-- METRICS GRID -->
+<section class="metrics-grid">
+  <article class="metric-card">
+    <h2>Total admissions</h2>
+    <p class="metric-value">324</p>
+    <p class="metric-change positive">+12% vs last week</p>
+  </article>
+  <article class="metric-card">
+    <h2>Total discharges</h2>
+    <p class="metric-value">298</p>
+    <p class="metric-change positive">+8% vs last week</p>
+  </article>
+  <article class="metric-card">
+    <h2>Average length of stay</h2>
+    <p class="metric-value">4.2 days</p>
+    <p class="metric-change neutral">No change</p>
+  </article>
+  <article class="metric-card">
+    <h2>Bed occupancy rate</h2>
+    <p class="metric-value">82%</p>
+    <p class="metric-change negative">+5% vs last week</p>
+  </article>
+</section>
+
+<!-- CHARTS GRID -->
+<section class="charts-grid">
+  <article class="card chart-card">
+    <h2>Ward occupancy overview</h2>
+    <div class="chart-placeholder">
+      <div class="bar-chart">
+        <div class="bar-item">
+          <span class="bar-label">AMU</span>
+          <div class="bar-track">
+            <div class="bar-fill critical" style="width: 91%;"></div>
+          </div>
+          <span class="bar-value">91%</span>
+        </div>
+        <div class="bar-item">
+          <span class="bar-label">CCU</span>
+          <div class="bar-track">
+            <div class="bar-fill warning" style="width: 86%;"></div>
+          </div>
+          <span class="bar-value">86%</span>
+        </div>
+        <div class="bar-item">
+          <span class="bar-label">ICU</span>
+          <div class="bar-track">
+            <div class="bar-fill critical" style="width: 90%;"></div>
+          </div>
+          <span class="bar-value">90%</span>
+        </div>
+        <div class="bar-item">
+          <span class="bar-label">RESP</span>
+          <div class="bar-track">
+            <div class="bar-fill ok" style="width: 73%;"></div>
+          </div>
+          <span class="bar-value">73%</span>
+        </div>
+        <div class="bar-item">
+          <span class="bar-label">SSS</span>
+          <div class="bar-track">
+            <div class="bar-fill ok" style="width: 71%;"></div>
+          </div>
+          <span class="bar-value">71%</span>
+        </div>
+        <div class="bar-item">
+          <span class="bar-label">PAED</span>
+          <div class="bar-track">
+            <div class="bar-fill ok" style="width: 70%;"></div>
+          </div>
+          <span class="bar-value">70%</span>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="card chart-card">
+    <h2>Admissions by specialty</h2>
+    <div class="chart-placeholder">
+      <div class="pie-legend">
+        <div class="legend-item">
+          <span class="legend-color" style="background: #3d5941;"></span>
+          <span class="legend-label">Acute Medicine</span>
+          <span class="legend-value">35%</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #6c8f5f;"></span>
+          <span class="legend-label">Surgery</span>
+          <span class="legend-value">22%</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #88b06a;"></span>
+          <span class="legend-label">Cardiology</span>
+          <span class="legend-value">18%</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #a8c89f;"></span>
+          <span class="legend-label">Respiratory</span>
+          <span class="legend-value">15%</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background: #c8dfc1;"></span>
+          <span class="legend-label">Other</span>
+          <span class="legend-value">10%</span>
+        </div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- WARD PERFORMANCE TABLE -->
+<section class="table-card">
+  <div class="table-card-header">
+    <div>
+      <h2>Ward performance summary</h2>
+      <p>Key metrics for each ward over the selected period.</p>
+    </div>
+  </div>
+  <div class="table-scroll">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Ward</th>
+          <th>Total admissions</th>
+          <th>Total discharges</th>
+          <th>Avg length of stay</th>
+          <th>Avg occupancy</th>
+          <th>Capacity status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Acute Medical Unit</td>
+          <td>87</td>
+          <td>79</td>
+          <td>3.8 days</td>
+          <td>91%</td>
+          <td><span class="badge critical">Critical</span></td>
+        </tr>
+        <tr>
+          <td>Coronary Care Unit</td>
+          <td>34</td>
+          <td>31</td>
+          <td>5.2 days</td>
+          <td>86%</td>
+          <td><span class="badge warning">Limited</span></td>
+        </tr>
+        <tr>
+          <td>Intensive Care Unit</td>
+          <td>28</td>
+          <td>24</td>
+          <td>7.1 days</td>
+          <td>90%</td>
+          <td><span class="badge critical">Critical</span></td>
+        </tr>
+        <tr>
+          <td>Respiratory Ward</td>
+          <td>52</td>
+          <td>48</td>
+          <td>4.5 days</td>
+          <td>73%</td>
+          <td><span class="badge ok">Open</span></td>
+        </tr>
+        <tr>
+          <td>Short Stay Surgical</td>
+          <td>68</td>
+          <td>71</td>
+          <td>2.1 days</td>
+          <td>71%</td>
+          <td><span class="badge ok">Open</span></td>
+        </tr>
+        <tr>
+          <td>Paediatrics Ward</td>
+          <td>55</td>
+          <td>45</td>
+          <td>3.2 days</td>
+          <td>70%</td>
+          <td><span class="badge ok">Open</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/reports.js"></script>
+{% endblock %}

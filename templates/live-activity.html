@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Live activity | MyHospital{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/live-activity.css">
+{% endblock %}
+
+{% block active_dashboard %}active{% endblock %}
+
+{% block header %}
+<a href="/" class="back-link">← Back to dashboard</a>
+<h1 class="page-title">Live activity feed</h1>
+<p class="page-subtitle">Real-time admissions, discharges, and critical events across all wards.</p>
+{% endblock %}
+
+{% block top_actions %}
+<div class="live-indicator">
+  <span class="live-dot"></span>
+  <span class="live-text">Live</span>
+</div>
+<span class="last-update">Updated <span id="lastUpdate">just now</span></span>
+{% endblock %}
+
+{% block content %}
+<!-- Stats Grid -->
+<section class="stats-grid">
+  <article class="stat-box admission">
+    <div class="stat-icon">↑</div>
+    <div class="stat-content">
+      <h3>Admissions today</h3>
+      <p class="stat-number" id="admissionsCount">8</p>
+    </div>
+  </article>
+  <article class="stat-box discharge">
+    <div class="stat-icon">↓</div>
+    <div class="stat-content">
+      <h3>Discharges today</h3>
+      <p class="stat-number" id="dischargesCount">6</p>
+    </div>
+  </article>
+  <article class="stat-box critical">
+    <div class="stat-icon">⚠</div>
+    <div class="stat-content">
+      <h3>Critical alerts</h3>
+      <p class="stat-number" id="alertsCount">2</p>
+    </div>
+  </article>
+  <article class="stat-box active">
+    <div class="stat-icon">👥</div>
+    <div class="stat-content">
+      <h3>Staff on duty</h3>
+      <p class="stat-number" id="staffCount">62</p>
+    </div>
+  </article>
+</section>
+
+<!-- Activity Grid -->
+<section class="activity-grid">
+  <article class="card activity-feed">
+    <div class="card-header">
+      <h2>Recent activity</h2>
+      <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
+    </div>
+    <div class="feed-list" id="feedList">
+      <div class="feed-item admission-item">
+        <div class="feed-time">13:24</div>
+        <div class="feed-content">
+          <div class="feed-badge admission-badge">Admission</div>
+          <p class="feed-text"><strong>Sarah Johnson</strong> (54F) admitted to <strong>AMU Bay 4</strong></p>
+          <p class="feed-meta">Sepsis • Dr. R. Morgan</p>
+        </div>
+      </div>
+      <div class="feed-item discharge-item">
+        <div class="feed-time">13:18</div>
+        <div class="feed-content">
+          <div class="feed-badge discharge-badge">Discharge</div>
+          <p class="feed-text"><strong>Emily Brown</strong> (39F) discharged from <strong>AMU Bay 1</strong></p>
+          <p class="feed-meta">Length of stay: 2 days</p>
+        </div>
+      </div>
+      <div class="feed-item alert-item">
+        <div class="feed-time">13:12</div>
+        <div class="feed-content">
+          <div class="feed-badge alert-badge">Alert</div>
+          <p class="feed-text"><strong>AMU</strong> capacity reached <strong>91%</strong></p>
+          <p class="feed-meta">Critical threshold exceeded</p>
+        </div>
+      </div>
+      <div class="feed-item admission-item">
+        <div class="feed-time">13:05</div>
+        <div class="feed-content">
+          <div class="feed-badge admission-badge">Admission</div>
+          <p class="feed-text"><strong>James Carter</strong> (68M) admitted to <strong>AMU Bay 2</strong></p>
+          <p class="feed-meta">Pneumonia • Dr. R. Morgan</p>
+        </div>
+      </div>
+      <div class="feed-item treatment-item">
+        <div class="feed-time">12:58</div>
+        <div class="feed-content">
+          <div class="feed-badge treatment-badge">Treatment</div>
+          <p class="feed-text"><strong>Mohammed Ali</strong> received <strong>IV Fluids</strong></p>
+          <p class="feed-meta">AMU Side-room 1 • Dr. A. Patel</p>
+        </div>
+      </div>
+      <div class="feed-item discharge-item">
+        <div class="feed-time">12:45</div>
+        <div class="feed-content">
+          <div class="feed-badge discharge-badge">Discharge</div>
+          <p class="feed-text"><strong>Jennifer Lewis</strong> (29F) discharged from <strong>SSS Bay 2</strong>
+          </p>
+          <p class="feed-meta">Length of stay: 1 day</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="card ward-status">
+    <h2>Ward status</h2>
+    <div class="ward-list">
+      <div class="ward-item">
+        <div class="ward-info">
+          <h3>AMU</h3>
+          <p>29 / 32 beds</p>
+        </div>
+        <div class="ward-meter critical-meter">
+          <div class="meter-fill" style="width: 91%;"></div>
+        </div>
+        <span class="ward-percent critical-text">91%</span>
+      </div>
+      <div class="ward-item">
+        <div class="ward-info">
+          <h3>ICU</h3>
+          <p>9 / 10 beds</p>
+        </div>
+        <div class="ward-meter critical-meter">
+          <div class="meter-fill" style="width: 90%;"></div>
+        </div>
+        <span class="ward-percent critical-text">90%</span>
+      </div>
+      <div class="ward-item">
+        <div class="ward-info">
+          <h3>CCU</h3>
+          <p>12 / 14 beds</p>
+        </div>
+        <div class="ward-meter warning-meter">
+          <div class="meter-fill" style="width: 86%;"></div>
+        </div>
+        <span class="ward-percent warning-text">86%</span>
+      </div>
+      <div class="ward-item">
+        <div class="ward-info">
+          <h3>RESP</h3>
+          <p>19 / 26 beds</p>
+        </div>
+        <div class="ward-meter ok-meter">
+          <div class="meter-fill" style="width: 73%;"></div>
+        </div>
+        <span class="ward-percent ok-text">73%</span>
+      </div>
+      <div class="ward-item">
+        <div class="ward-info">
+          <h3>SSS</h3>
+          <p>17 / 24 beds</p>
+        </div>
+        <div class="ward-meter ok-meter">
+          <div class="meter-fill" style="width: 71%;"></div>
+        </div>
+        <span class="ward-percent ok-text">71%</span>
+      </div>
+      <div class="ward-item">
+        <div class="ward-info">
+          <h3>PAED</h3>
+          <p>14 / 20 beds</p>
+        </div>
+        <div class="ward-meter ok-meter">
+          <div class="meter-fill" style="width: 70%;"></div>
+        </div>
+        <span class="ward-percent ok-text">70%</span>
+      </div>
+    </div>
+  </article>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/live-activity.js"></script>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Notification Settings | MyHospital{% endblock %}
+
+{% block active_notifications %}active{% endblock %}
+
+{% block page_title %}Notification settings{% endblock %}
+
+{% block page_subtitle %}Choose how you want to be notified about hospital activity.{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/notifications.css">
+{% endblock %}
+
+{% block content %}
+<section class="content-grid">
+  <!-- LEFT: channels -->
+  <section class="card">
+    <h2 class="card-title">Notification channels</h2>
+    <p class="card-text">Turn individual channels on or off for each type of alert.</p>
+
+    <div class="setting-row">
+      <div>
+        <h3>Admissions & discharges</h3>
+        <p>Alerts when patients are admitted, transferred, or discharged.</p>
+      </div>
+      <div class="switch-group">
+        <label class="switch">
+          <input type="checkbox" id="toggleAdmissionsEmail" checked>
+          <span class="slider round"></span>
+        </label>
+        <span class="switch-label">Email</span>
+
+        <label class="switch">
+          <input type="checkbox" id="toggleAdmissionsInApp" checked>
+          <span class="slider round"></span>
+        </label>
+        <span class="switch-label">In‑app</span>
+      </div>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <h3>Critical lab results</h3>
+        <p>High‑priority results that require rapid review.</p>
+      </div>
+      <div class="switch-group">
+        <label class="switch">
+          <input type="checkbox" id="toggleLabsEmail" checked>
+          <span class="slider round"></span>
+        </label>
+        <span class="switch-label">Email</span>
+
+        <label class="switch">
+          <input type="checkbox" id="toggleLabsInApp" checked>
+          <span class="slider round"></span>
+        </label>
+        <span class="switch-label">In‑app</span>
+      </div>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <h3>Bed capacity warnings</h3>
+        <p>Alerts when a ward reaches the defined occupancy threshold.</p>
+      </div>
+      <div class="switch-group">
+        <label class="switch">
+          <input type="checkbox" id="toggleCapacityInApp" checked>
+          <span class="slider round"></span>
+        </label>
+        <span class="switch-label">In‑app</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- RIGHT: preferences -->
+  <section class="card">
+    <h2 class="card-title">Delivery preferences</h2>
+    <p class="card-text">Control quiet hours and default urgency for new alerts.</p>
+
+    <div class="form-row">
+      <label for="quietFrom">Quiet hours</label>
+      <div class="inline-inputs">
+        <input type="time" id="quietFrom" value="22:00">
+        <span class="inline-separator">to</span>
+        <input type="time" id="quietTo" value="07:00">
+      </div>
+      <p class="hint">Notifications are muted during quiet hours except for critical alerts.</p>
+    </div>
+
+    <div class="form-row">
+      <label for="defaultUrgency">Default urgency</label>
+      <select id="defaultUrgency">
+        <option value="normal" selected>Normal</option>
+        <option value="high">High</option>
+        <option value="low">Low</option>
+      </select>
+    </div>
+
+    <button class="primary-btn" id="saveNotificationSettings">Save changes</button>
+
+    <div class="inline-alert" id="notificationSavedAlert">
+      <span class="inline-alert-dot"></span>
+      <span>Notification settings saved.</span>
+    </div>
+  </section>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/notifications.js"></script>
+{% endblock %}

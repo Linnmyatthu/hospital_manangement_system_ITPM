@@ -1,0 +1,345 @@
+{% extends "base.html" %}
+
+{% block title %}Wards - Hospital Management System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/ward.css">
+{% endblock %}
+
+{% block active_wards %}active{% endblock %}
+
+{% block page_title %}Ward Management{% endblock %}
+{% block page_subtitle %}Monitor bed occupancy and patient assignments across all wards.{% endblock %}
+
+{% block top_actions %}
+<a href="/patients" class="shortcut-btn">View all patients</a>
+<a href="/patients/add" class="shortcut-btn">+ Admit patient</a>
+{% endblock %}
+
+{% block content %}
+<!-- WARD A - MALE WARD -->
+<section class="ward-section">
+    <div class="ward-card">
+        <div class="ward-header">
+            <div class="ward-title-group">
+                <h2>🚹 Ward A - Male Ward</h2>
+                <span class="ward-type male">Male Only</span>
+            </div>
+            <div class="ward-stats">
+                <span class="badge badge-success">8 Occupied</span>
+                <span class="badge badge-info">2 Available</span>
+                <span class="badge badge-warning">Capacity: 8/10</span>
+            </div>
+        </div>
+
+        <div class="ward-body">
+            <div class="table-wrapper">
+                <table class="ward-table">
+                    <thead>
+                        <tr>
+                            <th>Bed No.</th>
+                            <th>Patient ID</th>
+                            <th>Patient Name</th>
+                            <th>Gender</th>
+                            <th>Age</th>
+                            <th>Condition</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="bed-number occupied">A01</span></td>
+                            <td><strong>P001</strong></td>
+                            <td><a href="/patients/1" class="patient-link">John Doe</a></td>
+                            <td>Male</td>
+                            <td>45</td>
+                            <td><span class="status-badge stable">Stable</span></td>
+                            <td class="actions">
+                                <button onclick="viewPatient('P001')" class="btn-action btn-view"
+                                    title="View Details">📇</button>
+                                <button onclick="openTransferModal('P001', 'John Doe', 'Male', 'Ward A')"
+                                    class="btn-action btn-transfer" title="Transfer">🔄</button>
+                                <button onclick="dischargePatient('P001', 'John Doe')" class="btn-action btn-discharge"
+                                    title="Discharge">🚪</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="bed-number occupied">A02</span></td>
+                            <td><strong>P005</strong></td>
+                            <td><a href="/patients/5" class="patient-link">Michael Davis</a>
+                            </td>
+                            <td>Male</td>
+                            <td>54</td>
+                            <td><span class="status-badge recovering">Recovering</span></td>
+                            <td class="actions">
+                                <button onclick="viewPatient('P005')" class="btn-action btn-view"
+                                    title="View Details">📇</button>
+                                <button onclick="openTransferModal('P005', 'Michael Davis', 'Male', 'Ward A')"
+                                    class="btn-action btn-transfer" title="Transfer">🔄</button>
+                                <button onclick="dischargePatient('P005', 'Michael Davis')"
+                                    class="btn-action btn-discharge" title="Discharge">🚪</button>
+                            </td>
+                        </tr>
+                        <tr class="empty-row">
+                            <td><span class="bed-number available">A03</span></td>
+                            <td colspan="5" class="empty-text">🟢 Available Bed</td>
+                            <td>-</td>
+                        </tr>
+                        <tr class="empty-row">
+                            <td><span class="bed-number available">A04</span></td>
+                            <td colspan="5" class="empty-text">🟢 Available Bed</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WARD B - FEMALE WARD -->
+<section class="ward-section">
+    <div class="ward-card">
+        <div class="ward-header">
+            <div class="ward-title-group">
+                <h2>🚺 Ward B - Female Ward</h2>
+                <span class="ward-type female">Female Only</span>
+            </div>
+            <div class="ward-stats">
+                <span class="badge badge-success">9 Occupied</span>
+                <span class="badge badge-info">1 Available</span>
+                <span class="badge badge-danger">Capacity: 9/10</span>
+            </div>
+        </div>
+
+        <div class="ward-body">
+            <div class="table-wrapper">
+                <table class="ward-table">
+                    <thead>
+                        <tr>
+                            <th>Bed No.</th>
+                            <th>Patient ID</th>
+                            <th>Patient Name</th>
+                            <th>Gender</th>
+                            <th>Age</th>
+                            <th>Condition</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="bed-number occupied">B01</span></td>
+                            <td><strong>P002</strong></td>
+                            <td><a href="/patients/2" class="patient-link">Jane Smith</a>
+                            </td>
+                            <td>Female</td>
+                            <td>32</td>
+                            <td><span class="status-badge recovering">Recovering</span></td>
+                            <td class="actions">
+                                <button onclick="viewPatient('P002')" class="btn-action btn-view"
+                                    title="View Details">📇</button>
+                                <button onclick="openTransferModal('P002', 'Jane Smith', 'Female', 'Ward B')"
+                                    class="btn-action btn-transfer" title="Transfer">🔄</button>
+                                <button onclick="dischargePatient('P002', 'Jane Smith')"
+                                    class="btn-action btn-discharge" title="Discharge">🚪</button>
+                            </td>
+                        </tr>
+                        <tr class="empty-row">
+                            <td><span class="bed-number available">B02</span></td>
+                            <td colspan="5" class="empty-text">🟢 Available Bed</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WARD C - MIXED WARD -->
+<section class="ward-section">
+    <div class="ward-card">
+        <div class="ward-header">
+            <div class="ward-title-group">
+                <h2>🏥 Ward C - Mixed Ward</h2>
+                <span class="ward-type mixed">Mixed Gender</span>
+            </div>
+            <div class="ward-stats">
+                <span class="badge badge-success">5 Occupied</span>
+                <span class="badge badge-info">3 Available</span>
+                <span class="badge badge-success">Capacity: 5/8</span>
+            </div>
+        </div>
+
+        <div class="ward-body">
+            <div class="table-wrapper">
+                <table class="ward-table">
+                    <thead>
+                        <tr>
+                            <th>Bed No.</th>
+                            <th>Patient ID</th>
+                            <th>Patient Name</th>
+                            <th>Gender</th>
+                            <th>Age</th>
+                            <th>Condition</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="bed-number occupied">C01</span></td>
+                            <td><strong>P004</strong></td>
+                            <td><a href="/patients/4" class="patient-link">Emily Brown</a>
+                            </td>
+                            <td>Female</td>
+                            <td>28</td>
+                            <td><span class="status-badge stable">Stable</span></td>
+                            <td class="actions">
+                                <button onclick="viewPatient('P004')" class="btn-action btn-view"
+                                    title="View Details">📇</button>
+                                <button onclick="openTransferModal('P004', 'Emily Brown', 'Female', 'Ward C')"
+                                    class="btn-action btn-transfer" title="Transfer">🔄</button>
+                                <button onclick="dischargePatient('P004', 'Emily Brown')"
+                                    class="btn-action btn-discharge" title="Discharge">🚪</button>
+                            </td>
+                        </tr>
+                        <tr class="empty-row">
+                            <td><span class="bed-number available">C02</span></td>
+                            <td colspan="5" class="empty-text">🟢 Available Bed</td>
+                            <td>-</td>
+                        </tr>
+                        <tr class="empty-row">
+                            <td><span class="bed-number available">C03</span></td>
+                            <td colspan="5" class="empty-text">🟢 Available Bed</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ICU - MIXED -->
+<section class="ward-section">
+    <div class="ward-card icu">
+        <div class="ward-header">
+            <div class="ward-title-group">
+                <h2>🚨 ICU - Intensive Care Unit</h2>
+                <span class="ward-type mixed">Mixed Gender</span>
+            </div>
+            <div class="ward-stats">
+                <span class="badge badge-success">1 Occupied</span>
+                <span class="badge badge-info">4 Available</span>
+                <span class="badge badge-success">Capacity: 1/5</span>
+            </div>
+        </div>
+
+        <div class="ward-body">
+            <div class="table-wrapper">
+                <table class="ward-table">
+                    <thead>
+                        <tr>
+                            <th>Bed No.</th>
+                            <th>Patient ID</th>
+                            <th>Patient Name</th>
+                            <th>Gender</th>
+                            <th>Age</th>
+                            <th>Condition</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="bed-number occupied">ICU-01</span></td>
+                            <td><strong>P003</strong></td>
+                            <td><a href="/patients/3" class="patient-link">Robert
+                                    Johnson</a></td>
+                            <td>Male</td>
+                            <td>67</td>
+                            <td><span class="status-badge critical">Critical</span></td>
+                            <td class="actions">
+                                <button onclick="viewPatient('P003')" class="btn-action btn-view"
+                                    title="View Details">📇</button>
+                                <button onclick="openTransferModal('P003', 'Robert Johnson', 'Male', 'ICU')"
+                                    class="btn-action btn-transfer" title="Transfer">🔄</button>
+                                <button onclick="dischargePatient('P003', 'Robert Johnson')"
+                                    class="btn-action btn-discharge" title="Discharge">🚪</button>
+                            </td>
+                        </tr>
+                        <tr class="empty-row">
+                            <td><span class="bed-number available">ICU-02</span></td>
+                            <td colspan="5" class="empty-text">🟢 Available Bed</td>
+                            <td>-</td>
+                        </tr>
+                        <tr class="empty-row">
+                            <td><span class="bed-number available">ICU-03</span></td>
+                            <td colspan="5" class="empty-text">🟢 Available Bed</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TRANSFER MODAL -->
+<div id="transferModal" class="modal">
+    <div class="modal-overlay" onclick="closeTransferModal()"></div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Transfer Patient</h3>
+                <button class="modal-close" onclick="closeTransferModal()">&times;</button>
+            </div>
+
+            <form id="transferForm" onsubmit="return submitTransfer(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="transferPatientId">
+                    <input type="hidden" id="transferPatientGender">
+
+                    <div class="form-group">
+                        <label>Patient Name</label>
+                        <input type="text" id="transferPatientName" class="form-input" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Current Ward</label>
+                        <input type="text" id="currentWard" class="form-input" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Select New Ward <span class="required">*</span></label>
+                        <select id="newWardSelect" class="form-input" required>
+                            <option value="">-- Select Ward --</option>
+                            <option value="1" data-gender="Male">Ward A - Male Ward</option>
+                            <option value="2" data-gender="Female">Ward B - Female Ward</option>
+                            <option value="3" data-gender="Mixed">Ward C - Mixed Ward</option>
+                            <option value="4" data-gender="Mixed">ICU - Mixed</option>
+                        </select>
+                        <small id="wardGenderError" class="error-text">
+                            ⚠️ Gender mismatch! This ward is for different gender.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Reason for Transfer <span class="required">*</span></label>
+                        <textarea id="transferReason" class="form-input" rows="4" required
+                            placeholder="Enter reason for transfer..."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeTransferModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Transfer Patient</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/ward.js"></script>
+{% endblock %}

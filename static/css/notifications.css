@@ -1,0 +1,189 @@
+/* CONTENT GRID - specific to notifications page layout */
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 1.2rem;
+}
+
+/* CARD STYLES - might be reusable but keeping for now */
+.card {
+  background: var(--bg-card);
+  border-radius: 18px;
+  padding: 1.2rem 1.4rem;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-soft);
+}
+
+.card-title {
+  margin: 0 0 0.3rem;
+  font-size: 1.05rem;
+}
+
+.card-text {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* SETTINGS ROWS - specific to notification settings */
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.setting-row:first-of-type {
+  border-top: none;
+}
+
+.setting-row h3 {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+}
+
+.setting-row p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* SWITCH GROUP - toggle switch container */
+.switch-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.switch-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* TOGGLE SWITCH - custom component */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #c5d1c4;
+  transition: 0.2s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.2s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--accent);
+}
+
+input:checked + .slider:before {
+  transform: translateX(18px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+/* FORM FIELDS - notification specific forms */
+.form-row {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.form-row label {
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.inline-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.inline-separator {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+input[type="time"],
+select {
+  padding: 0.4rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-size: 0.9rem;
+}
+
+.hint {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* BUTTON + inline alert - notification specific */
+.primary-btn {
+  margin-top: 0.4rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: var(--text-invert);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.primary-btn:hover {
+  background: var(--accent-soft);
+}
+
+.inline-alert {
+  margin-top: 0.7rem;
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--accent);
+}
+
+.inline-alert-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* RESPONSIVE - only notification-specific breakpoints */
+@media (max-width: 960px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}

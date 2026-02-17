@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Details - Hospital Management System{% endblock %}
+
+{% block active_patients %}active{% endblock %}
+
+{% block page_title %}Patient Information{% endblock %}
+
+{% block page_subtitle %}View and manage patient details{% endblock %}
+
+{% block top_actions %}
+<button onclick="printPatientRecord()" class="shortcut-btn">🖨️ Print</button>
+{{ super() }}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/patient-detail.css">
+{% endblock %}
+
+{% block content %}
+<!-- Back button in header override -->
+<div class="top-left-row">
+  <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+  <a href="/patients" class="back-btn">← Back to Patients</a>
+</div>
+
+<!-- PATIENT INFO CARD -->
+<section class="content-section">
+  <div class="info-card">
+    <div class="info-card-header">
+      <h2>Patient Information</h2>
+      <span class="status-badge stable">Active Patient</span>
+    </div>
+
+    <div class="patient-info-grid">
+      <div class="info-item">
+        <span class="info-label">Patient ID</span>
+        <span class="info-value" id="patientId">P001</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Full Name</span>
+        <span class="info-value" id="patientName">John Doe</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Gender</span>
+        <span class="info-value" id="patientGender">Male</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Age</span>
+        <span class="info-value" id="patientAge">45 years</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Date of Birth</span>
+        <span class="info-value" id="patientDob">15 Jan 1981</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Blood Group</span>
+        <span class="info-value" id="patientBlood">O+</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Current Ward</span>
+        <span class="info-value" id="patientWard">Ward A - Male Ward</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Bed Number</span>
+        <span class="info-value" id="bedNumber">A01</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Admission Date</span>
+        <span class="info-value" id="admissionDate">10 Feb 2026</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Contact Number</span>
+        <span class="info-value" id="contactNumber">+44 7123 456789</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Emergency Contact</span>
+        <span class="info-value" id="emergencyContact">Jane Doe (Wife)</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Status</span>
+        <span class="info-value"><span class="status-badge stable">Stable</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TREATMENT HISTORY -->
+<section class="content-section">
+  <div class="data-card">
+    <div class="data-card-header">
+      <h2>Treatment History</h2>
+      <span class="badge badge-info">8 Treatments</span>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Doctor</th>
+            <th>Specialty</th>
+            <th>Diagnosis</th>
+            <th>Treatment</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>12 Feb 2026</td>
+            <td><strong>Dr. Sarah Smith</strong></td>
+            <td>Cardiology</td>
+            <td>Hypertension</td>
+            <td>Medication prescribed</td>
+            <td>Follow-up in 2 weeks</td>
+          </tr>
+          <tr>
+            <td>11 Feb 2026</td>
+            <td><strong>Dr. Michael Brown</strong></td>
+            <td>General Medicine</td>
+            <td>Initial Assessment</td>
+            <td>Blood tests ordered</td>
+            <td>Referred to cardiology</td>
+          </tr>
+          <tr>
+            <td>10 Feb 2026</td>
+            <td><strong>Dr. Emily Johnson</strong></td>
+            <td>Emergency Medicine</td>
+            <td>Chest Pain</td>
+            <td>Emergency care</td>
+            <td>Admitted to ward</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- DOCTORS WHO TREATED THIS PATIENT -->
+<section class="content-section">
+  <div class="info-card">
+    <div class="info-card-header">
+      <h2>Treating Doctors</h2>
+    </div>
+
+    <div class="doctors-grid">
+      <div class="doctor-card">
+        <div class="doctor-avatar">👨‍⚕️</div>
+        <div class="doctor-info">
+          <h4>Dr. Sarah Smith</h4>
+          <p class="doctor-specialty">Cardiology</p>
+          <p class="doctor-contact">📞 Ext: 1234</p>
+          <p class="doctor-email">✉️ sarah.smith@hospital.com</p>
+        </div>
+      </div>
+
+      <div class="doctor-card">
+        <div class="doctor-avatar">👨‍⚕️</div>
+        <div class="doctor-info">
+          <h4>Dr. Michael Brown</h4>
+          <p class="doctor-specialty">General Medicine</p>
+          <p class="doctor-contact">📞 Ext: 5678</p>
+          <p class="doctor-email">✉️ michael.brown@hospital.com</p>
+        </div>
+      </div>
+
+      <div class="doctor-card">
+        <div class="doctor-avatar">👩‍⚕️</div>
+        <div class="doctor-info">
+          <h4>Dr. Emily Johnson</h4>
+          <p class="doctor-specialty">Emergency Medicine</p>
+          <p class="doctor-contact">📞 Ext: 9999</p>
+          <p class="doctor-email">✉️ emily.johnson@hospital.com</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/patient-detail.js"></script>
+{% endblock %}

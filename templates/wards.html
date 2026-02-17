@@ -1,0 +1,304 @@
+{% extends "base.html" %}
+
+{% block title %}Wards | MyHospital{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/wards.css">
+{% endblock %}
+
+{% block active_wards %}active{% endblock %}
+
+{% block page_title %}Wards{% endblock %}
+{% block page_subtitle %}Overview of all inpatient wards, bed capacity, and current occupancy.{% endblock %}
+
+{% block top_actions %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<!-- ACTION BUTTONS SECTION (BELOW SUMMARY CARDS) -->
+<section class="action-buttons-section">
+  <div class="action-buttons-container">
+    <a href="/ward" class="primary-btn">View Ward Details</a>
+    <a href="#add-ward-modal" class="primary-btn" onclick="openAddWardModal()">+ Add New Ward</a>
+  </div>
+</section>
+
+<!-- SUMMARY CARDS -->
+<section class="summary-row">
+  <article class="summary-card">
+    <h2>Total wards</h2>
+    <p class="summary-value">{{ stats.total_wards if stats else 0 }}</p>
+    <p class="summary-label">Medical, Surgical, ICU and more</p>
+  </article>
+
+  <article class="summary-card">
+    <h2>Average occupancy</h2>
+    <p class="summary-value">{{ stats.avg_occupancy if stats else 0 }}%</p>
+    <p class="summary-label">Across all active wards</p>
+  </article>
+
+  <article class="summary-card">
+    <h2>Critical capacity</h2>
+    <p class="summary-value">{{ stats.critical_wards if stats else 0 }} wards</p>
+    <p class="summary-label">Above 90% bed use</p>
+  </article>
+</section>
+
+
+<!-- TABLE CARD -->
+<section class="table-card">
+  <div class="table-card-header">
+    <div>
+      <h2>Ward list</h2>
+      <p>Search by ward name or type to find the right unit quickly.</p>
+    </div>
+
+    <div class="table-actions">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="wardSearch" placeholder="Search by name or type..." autocomplete="off" />
+      </div>
+
+      <select id="wardStatusFilter" class="status-filter">
+        <option value="all">All statuses</option>
+        <option value="Open">Open</option>
+        <option value="Limited">Limited</option>
+        <option value="Critical">Critical</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="table-scroll">
+    <table class="data-table" id="wardsTable">
+      <thead>
+        <tr>
+          <th>Ward name</th>
+          <th>Code</th>
+          <th>Type</th>
+          <th>Total beds</th>
+          <th>Occupied</th>
+          <th>Occupancy</th>
+          <th>Status</th>
+          <th>Lead consultant</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ward in wards %}
+        <tr>
+          <td data-label="Ward name">{{ ward.name }}</td>
+          <td data-label="Code">{{ ward.code }}</td>
+          <td data-label="Type">{{ ward.type }}</td>
+          <td data-label="Total beds">{{ ward.capacity }}</td>
+          <td data-label="Occupied">{{ ward.occupied }}</td>
+          <td data-label="Occupancy">
+            {% if ward.capacity > 0 %}
+            {{ (ward.occupied / ward.capacity * 100) | int }}%
+            {% else %}
+            0%
+            {% endif %}
+          </td>
+          <td data-label="Status">
+            {% set occupancy_percent = (ward.occupied / ward.capacity * 100) if ward.capacity > 0 else 0 %}
+            {% if occupancy_percent >= 90 %}
+            <span class="badge critical">Critical</span>
+            {% elif occupancy_percent >= 75 %}
+            <span class="badge warning">Limited</span>
+            {% else %}
+            <span class="badge ok">Open</span>
+            {% endif %}
+          </td>
+          <td data-label="Lead consultant">{{ ward.lead_consultant or 'Not assigned' }}</td>
+          <td data-label="Actions">
+            <a href="/ward/{{ ward.id }}" class="btn-action btn-view" title="View Details">👁️</a>
+            <button onclick="editWard(this)" data-ward-id="{{ ward.id }}" data-ward-name="{{ ward.name }}"
+              data-ward-code="{{ ward.code }}" data-ward-type="{{ ward.type }}" data-ward-capacity="{{ ward.capacity }}"
+              data-ward-occupied="{{ ward.occupied }}" data-ward-consultant="{{ ward.lead_consultant or '' }}"
+              class="btn-action btn-edit" title="Edit">✏️</button>
+            <button onclick="deleteWard(this)" data-ward-id="{{ ward.id }}" data-ward-name="{{ ward.name }}"
+              class="btn-action btn-delete" title="Delete">🗑️</button>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+            No wards found. Click "Add New Ward" to create your first ward.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="no-results" id="noResultsMessage" style="display: none;">
+      No wards match your search. Try a different name, type, or status.
+    </div>
+  </div>
+</section>
+
+<!-- Add Ward Modal -->
+<div id="addWardModal" class="modal" style="display: none;">
+  <div class="modal-overlay" onclick="closeAddWardModal()"></div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Add New Ward</h3>
+        <button class="modal-close" onclick="closeAddWardModal()">&times;</button>
+      </div>
+
+      <form action="/api/wards" method="POST" onsubmit="return validateWardForm(this)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Ward Name <span class="required">*</span></label>
+            <input type="text" name="name" class="form-input" required placeholder="e.g., Acute Medical Unit">
+          </div>
+
+          <div class="form-group">
+            <label>Ward Code <span class="required">*</span></label>
+            <input type="text" name="code" class="form-input" required placeholder="e.g., AMU" maxlength="10">
+          </div>
+
+          <div class="form-group">
+            <label>Ward Type <span class="required">*</span></label>
+            <select name="type" class="form-input" required>
+              <option value="">Select Type</option>
+              <option value="Medical">Medical</option>
+              <option value="Surgical">Surgical</option>
+              <option value="Cardiology">Cardiology</option>
+              <option value="Critical care">Critical care</option>
+              <option value="Neurology">Neurology</option>
+              <option value="Pediatrics">Pediatrics</option>
+              <option value="Maternity">Maternity</option>
+              <option value="Oncology">Oncology</option>
+              <option value="Orthopedics">Orthopedics</option>
+              <option value="Trauma & Ortho">Trauma & Ortho</option>
+              <option value="Obstetrics">Obstetrics</option>
+              <option value="Children">Children</option>
+            </select>
+          </div>
+
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label>Total Beds <span class="required">*</span></label>
+              <input type="number" name="capacity" class="form-input" required min="1" value="20">
+            </div>
+
+            <div class="form-group">
+              <label>Currently Occupied</label>
+              <input type="number" name="occupied" class="form-input" min="0" value="0">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Lead Consultant</label>
+            <input type="text" name="lead_consultant" class="form-input" placeholder="e.g., Dr. Riley Morgan">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" onclick="closeAddWardModal()">Cancel</button>
+          <button type="submit" class="btn-primary">Add Ward</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Ward Modal -->
+<div id="editWardModal" class="modal" style="display: none;">
+  <div class="modal-overlay" onclick="closeEditWardModal()"></div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Ward</h3>
+        <button class="modal-close" onclick="closeEditWardModal()">&times;</button>
+      </div>
+
+      <form id="editWardForm" method="POST" onsubmit="return validateWardForm(this)">
+        <div class="modal-body">
+          <input type="hidden" name="ward_id" id="edit_ward_id">
+
+          <div class="form-group">
+            <label>Ward Name <span class="required">*</span></label>
+            <input type="text" name="name" id="edit_name" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label>Ward Code <span class="required">*</span></label>
+            <input type="text" name="code" id="edit_code" class="form-input" required maxlength="10">
+          </div>
+
+          <div class="form-group">
+            <label>Ward Type <span class="required">*</span></label>
+            <select name="type" id="edit_type" class="form-input" required>
+              <option value="Medical">Medical</option>
+              <option value="Surgical">Surgical</option>
+              <option value="Cardiology">Cardiology</option>
+              <option value="Critical care">Critical care</option>
+              <option value="Neurology">Neurology</option>
+              <option value="Pediatrics">Pediatrics</option>
+              <option value="Maternity">Maternity</option>
+              <option value="Oncology">Oncology</option>
+              <option value="Orthopedics">Orthopedics</option>
+              <option value="Trauma & Ortho">Trauma & Ortho</option>
+              <option value="Obstetrics">Obstetrics</option>
+              <option value="Children">Children</option>
+            </select>
+          </div>
+
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label>Total Beds <span class="required">*</span></label>
+              <input type="number" name="capacity" id="edit_capacity" class="form-input" required min="1">
+            </div>
+
+            <div class="form-group">
+              <label>Currently Occupied</label>
+              <input type="number" name="occupied" id="edit_occupied" class="form-input" min="0">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Lead Consultant</label>
+            <input type="text" name="lead_consultant" id="edit_lead_consultant" class="form-input">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" onclick="closeEditWardModal()">Cancel</button>
+          <button type="submit" class="btn-primary">Update Ward</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteWardModal" class="modal" style="display: none;">
+  <div class="modal-overlay" onclick="closeDeleteModal()"></div>
+  <div class="modal-dialog" style="max-width: 400px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirm Delete</h3>
+        <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong id="deleteWardName"></strong>?</p>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">This action cannot be undone.</p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+        <form id="deleteWardForm" method="POST" style="display: inline;">
+          <button type="submit" class="btn-danger">Delete Ward</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/wards.js"></script>
+{% endblock %}

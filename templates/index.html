@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Hospital Management Dashboard{% endblock %}
+
+{% block active_dashboard %}active{% endblock %}
+
+{% block page_title %}Hospital Overview{% endblock %}
+{% block page_subtitle %}Monitor wards, teams, and patients in real time.{% endblock %}
+
+{% block content %}
+<!-- CARD ROW (TOP) - Dynamic data from Flask -->
+<section class="card-row">
+  <article class="stat-card">
+    <div class="stat-header">
+      <h2>Wards</h2>
+      <span class="stat-pill">{{ stats.active_wards if stats else 12 }} active</span>
+    </div>
+    <p>Manage ward capacity and see which units are nearing limits.</p>
+    <a href="/wards" class="card-cta">Go to wards</a>
+  </article>
+
+  <article class="stat-card">
+    <div class="stat-header">
+      <h2>Teams</h2>
+      <span class="stat-pill">{{ stats.total_teams if stats else 26 }} teams</span>
+    </div>
+    <p>Organise consultants, registrars, and nurses by specialty.</p>
+    <a href="/teams" class="card-cta">Go to teams</a>
+  </article>
+
+  <article class="stat-card">
+    <div class="stat-header">
+      <h2>Treatments</h2>
+      <span class="stat-pill">+{{ stats.treatments_today if stats else 58 }} today</span>
+    </div>
+    <p>Record and review treatment history for each patient.</p>
+    <a href="/treatments" class="card-cta">Record treatment</a>
+  </article>
+
+  <article class="stat-card">
+    <div class="stat-header">
+      <h2>Doctors</h2>
+      <span class="stat-pill">{{ stats.doctors_on_duty if stats else 84 }} on duty</span>
+    </div>
+    <p>Track staffing levels and on-call coverage across wards.</p>
+    <a href="/doctors" class="card-cta">View doctors</a>
+  </article>
+</section>
+
+<!-- HERO WITH IMAGE BESIDE TEXT -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <h2>Real-time hospital overview</h2>
+      <p>
+        See admissions, discharges, and bed occupancy at a glance, with quick access to teams and treatments.
+      </p>
+      <ul class="hero-list">
+        <li>Live ward capacity monitoring</li>
+        <li>Consultant and registrar coverage by team</li>
+        <li>Quick links to record new treatments</li>
+      </ul>
+      <button class="hero-btn" onclick="location.href='/live'">View live activity</button>
+    </div>
+
+    <div class="hero-image-wrapper">
+      <img src="/static/pic/index.png" alt="Doctors and nurses in hospital" class="hero-image-img">
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE STRIP (BOTTOM PANEL) -->
+<section class="feature-strip">
+  <article class="feature">
+    <h3>Patient tracking</h3>
+    <p>Follow each patient from admission to discharge with clear ward and team assignments.</p>
+  </article>
+  <article class="feature">
+    <h3>Team organisation</h3>
+    <p>Group doctors by grade and specialty, and keep on-call rosters up to date.</p>
+  </article>
+  <article class="feature">
+    <h3>Reporting</h3>
+    <p>Generate daily reports on occupancy, length of stay, and treatment counts per ward.</p>
+  </article>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/index.js"></script>
+{% endblock %}

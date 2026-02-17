@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Record treatment | MyHospital{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/record-treatment.css">
+{% endblock %}
+
+{% block active_treatments %}active{% endblock %}
+
+{% block page_title %}Record treatment{% endblock %}
+
+{% block page_subtitle %}Log medications, procedures, and clinical interventions for patient records.{% endblock %}
+
+{% block top_actions %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<!-- FORM GRID -->
+<section class="form-grid">
+  <article class="card form-card">
+    <h2>Patient selection</h2>
+    <form id="patientForm">
+      <div class="form-row">
+        <label for="patientSearch">Find patient *</label>
+        <input type="text" id="patientSearch" placeholder="Search by name or NHS number..." required>
+        <p class="hint">Start typing to search admitted patients</p>
+      </div>
+      <div class="form-row">
+        <label for="patientSelect">Select patient *</label>
+        <select id="patientSelect" required>
+          <option value="">Choose from list...</option>
+          <option value="1">James Carter (68M) – AMU Bay 2 Bed 3</option>
+          <option value="2">Sarah Johnson (54F) – AMU Bay 4 Bed 1</option>
+          <option value="3">Mohammed Ali (71M) – AMU Side-room 1</option>
+          <option value="4">Emily Brown (39F) – AMU Bay 1 Bed 5</option>
+          <option value="5">David Wilson (82M) – AMU Bay 5 Bed 2</option>
+          <option value="6">Olivia Taylor (61F) – RESP Bay 3 Bed 4</option>
+          <option value="7">George Harris (76M) – AMU Bay 6 Bed 1</option>
+          <option value="8">Lisa Martin (48F) – CCU Bay 2 Bed 5</option>
+        </select>
+      </div>
+      <div class="patient-info" id="patientInfo" style="display:none;">
+        <h3>Selected patient</h3>
+        <p><strong>Name:</strong> <span id="infoName">–</span></p>
+        <p><strong>Ward:</strong> <span id="infoWard">–</span></p>
+        <p><strong>Consultant:</strong> <span id="infoConsultant">–</span></p>
+      </div>
+    </form>
+  </article>
+
+  <article class="card form-card">
+    <h2>Treatment details</h2>
+    <form id="treatmentForm">
+      <div class="form-row">
+        <label for="treatmentType">Treatment type *</label>
+        <select id="treatmentType" required>
+          <option value="">Select type...</option>
+          <option value="Medication">Medication</option>
+          <option value="Procedure">Procedure</option>
+          <option value="Investigation">Investigation</option>
+          <option value="Therapy">Therapy</option>
+          <option value="Consultation">Consultation</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="treatmentName">Treatment name *</label>
+        <input type="text" id="treatmentName" placeholder="e.g. IV Antibiotics, Chest X-ray..." required>
+      </div>
+      <div class="form-row">
+        <label for="dose">Dose / Details</label>
+        <input type="text" id="dose" placeholder="e.g. 1g IV, Once daily">
+      </div>
+      <div class="form-row-group">
+        <div class="form-row">
+          <label for="treatmentDate">Date *</label>
+          <input type="date" id="treatmentDate" required>
+        </div>
+        <div class="form-row">
+          <label for="treatmentTime">Time *</label>
+          <input type="time" id="treatmentTime" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <label for="prescriber">Prescriber / Performer *</label>
+        <select id="prescriber" required>
+          <option value="">Select doctor...</option>
+          <option value="Dr. R. Morgan">Dr. Riley Morgan</option>
+          <option value="Dr. A. Patel">Dr. Aisha Patel</option>
+          <option value="Dr. J. Lee">Dr. James Lee</option>
+          <option value="Dr. N. Khan">Dr. Noor Khan</option>
+          <option value="Dr. S. Green">Dr. Sophie Green</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="notes">Clinical notes</label>
+        <textarea id="notes" rows="4" placeholder="Indication, response, side effects..."></textarea>
+      </div>
+    </form>
+  </article>
+</section>
+
+<!-- ACTION BAR -->
+<section class="action-bar">
+  <button type="button" class="secondary-btn" onclick="window.location.href='/'">Cancel</button>
+  <button type="submit" class="primary-btn" id="submitBtn">Record treatment</button>
+</section>
+
+<!-- SUCCESS ALERT -->
+<div class="success-alert" id="successAlert">
+  <span class="alert-icon">✓</span>
+  <span>Treatment recorded successfully!</span>
+</div>
+
+<!-- RECENT TREATMENTS TABLE -->
+<section class="table-card">
+  <div class="table-card-header">
+    <div>
+      <h2>Recent treatments</h2>
+      <p>Last 10 treatments recorded across all patients.</p>
+    </div>
+    <div class="table-actions">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="treatmentSearch" placeholder="Search by patient or treatment..." autocomplete="off" />
+      </div>
+    </div>
+  </div>
+
+  <div class="table-scroll">
+    <table class="data-table" id="treatmentsTable">
+      <thead>
+        <tr>
+          <th>Patient name</th>
+          <th>Treatment type</th>
+          <th>Treatment</th>
+          <th>Dose</th>
+          <th>Date & time</th>
+          <th>Prescriber</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>James Carter</td>
+          <td>Medication</td>
+          <td>IV Tazocin</td>
+          <td>4.5g IV TDS</td>
+          <td>11 Feb 2026 14:30</td>
+          <td>Dr. R. Morgan</td>
+        </tr>
+        <tr>
+          <td>Sarah Johnson</td>
+          <td>Investigation</td>
+          <td>Blood cultures</td>
+          <td>–</td>
+          <td>11 Feb 2026 13:00</td>
+          <td>Dr. R. Morgan</td>
+        </tr>
+        <tr>
+          <td>Mohammed Ali</td>
+          <td>Medication</td>
+          <td>IV Fluids (0.9% NaCl)</td>
+          <td>1L over 8hrs</td>
+          <td>10 Feb 2026 22:00</td>
+          <td>Dr. A. Patel</td>
+        </tr>
+        <tr>
+          <td>Emily Brown</td>
+          <td>Medication</td>
+          <td>Insulin sliding scale</td>
+          <td>As per protocol</td>
+          <td>09 Feb 2026 18:00</td>
+          <td>Dr. J. Khan</td>
+        </tr>
+        <tr>
+          <td>David Wilson</td>
+          <td>Medication</td>
+          <td>IV Furosemide</td>
+          <td>40mg IV BD</td>
+          <td>08 Feb 2026 09:00</td>
+          <td>Dr. R. Morgan</td>
+        </tr>
+        <tr>
+          <td>Olivia Taylor</td>
+          <td>Therapy</td>
+          <td>Nebulised salbutamol</td>
+          <td>5mg QDS</td>
+          <td>08 Feb 2026 16:00</td>
+          <td>Dr. N. Taylor</td>
+        </tr>
+        <tr>
+          <td>George Harris</td>
+          <td>Investigation</td>
+          <td>CT Head</td>
+          <td>–</td>
+          <td>07 Feb 2026 11:30</td>
+          <td>Dr. P. Ahmed</td>
+        </tr>
+        <tr>
+          <td>Lisa Martin</td>
+          <td>Medication</td>
+          <td>Enoxaparin</td>
+          <td>1.5mg/kg SC OD</td>
+          <td>06 Feb 2026 20:00</td>
+          <td>Dr. N. Khan</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="no-results" id="treatmentsNoResults">No treatments match your search.</div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/record-treatment.js"></script>
+{% endblock %}

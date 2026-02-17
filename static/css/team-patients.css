@@ -1,0 +1,283 @@
+/* team-patients.css - only team patients page specific styles */
+
+/* BACK LINK */
+.back-link {
+  display: inline-block;
+  margin-bottom: 0.2rem;
+  font-size: 0.85rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* STATUS PILL */
+.status-pill {
+  padding: 0.25rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+
+.status-pill.oncall {
+  background: #d9edcf;
+  color: #325037;
+}
+
+/* CARDS GRID */
+.info-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.card {
+  background: var(--bg-card);
+  border-radius: 18px;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-soft);
+}
+
+.card h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+/* INFO CARD */
+.info-card .info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.45rem;
+}
+
+.info-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.info-value {
+  font-size: 0.9rem;
+}
+
+.badge-inline {
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+
+.badge-inline.oncall {
+  background: #d9edcf;
+  color: #325037;
+}
+
+/* STATS CARD */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.stat-item {
+  background: var(--bg-feature);
+  border-radius: 12px;
+  padding: 0.5rem 0.6rem;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.stat-value {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* TEAM MEMBERS CARD */
+.member-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.member-name {
+  font-size: 0.9rem;
+}
+
+.member-badge {
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  background: var(--bg-pill);
+  color: var(--accent-pill);
+}
+
+.text-link {
+  font-size: 0.85rem;
+  color: var(--accent);
+  text-decoration: none;
+  margin-top: 0.3rem;
+  display: inline-block;
+}
+
+.text-link:hover {
+  text-decoration: underline;
+}
+
+/* PATIENT TABLE */
+.table-card {
+  background: var(--bg-main);
+  border-radius: 18px;
+  padding: 1.2rem 1.4rem;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+}
+
+.table-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.table-card-header h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+}
+
+.table-card-header p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* SEARCH */
+.search-wrapper {
+  position: relative;
+}
+
+.search-wrapper input {
+  padding: 0.4rem 0.9rem 0.4rem 1.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-main);
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+
+.search-wrapper input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+}
+
+.status-filter {
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-main);
+  font-size: 0.85rem;
+}
+
+/* TABLE */
+.table-scroll {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.data-table thead {
+  background: var(--bg-feature);
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.55rem 0.55rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.data-table th {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.data-table tbody tr:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* BADGES */
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+
+.badge.active {
+  background: #e0f2fe;
+  color: #075985;
+}
+
+.badge.ready {
+  background: #d9edcf;
+  color: #325037;
+}
+
+.no-results {
+  display: none;
+  margin-top: 0.8rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* RESPONSIVE - only page-specific */
+@media (max-width: 960px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .table-card-header {
+    flex-direction: column;
+  }
+  
+  .table-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  
+  .search-wrapper {
+    flex: 1;
+  }
+  
+  .search-wrapper input {
+    width: 100%;
+  }
+}

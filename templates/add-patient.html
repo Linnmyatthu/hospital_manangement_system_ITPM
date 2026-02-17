@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Add new patient | MyHospital{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/add-patient.css">
+{% endblock %}
+
+{% block active_patients %}active{% endblock %}
+
+{% block header %}
+<a href="/patients" class="back-link">← Back to patients</a>
+<h1 class="page-title">Add new patient</h1>
+<p class="page-subtitle">Register a new admission with demographic and clinical details.</p>
+{% endblock %}
+
+{% block top_actions %}
+<!-- Override top actions to remove shortcuts on this page -->
+<div class="settings-wrapper">
+  <button class="settings-btn" id="settingsToggle">
+    Settings ▾
+  </button>
+  <div class="settings-menu" id="settingsMenu">
+    <button class="settings-item" id="lightModeToggle">Dark mode</button>
+    <button class="settings-item" onclick="location.href='/notifications'">
+      Notification settings
+    </button>
+    <button class="settings-item" onclick="location.href='/profile'">
+      Profile & security
+    </button>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- CARD ROW (TOP) -->
+<section class="form-grid">
+  <article class="card form-card">
+    <h2>Patient demographics</h2>
+    <form id="patientForm">
+      <div class="form-row">
+        <label for="firstName">First name *</label>
+        <input type="text" id="firstName" required>
+      </div>
+      <div class="form-row">
+        <label for="lastName">Last name *</label>
+        <input type="text" id="lastName" required>
+      </div>
+      <div class="form-row-group">
+        <div class="form-row">
+          <label for="dob">Date of birth *</label>
+          <input type="date" id="dob" required>
+        </div>
+        <div class="form-row">
+          <label for="age">Age</label>
+          <input type="number" id="age" readonly>
+        </div>
+      </div>
+      <div class="form-row">
+        <label for="sex">Sex *</label>
+        <select id="sex" required>
+          <option value="">Select...</option>
+          <option value="M">Male</option>
+          <option value="F">Female</option>
+          <option value="O">Other</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="nhsNumber">NHS number *</label>
+        <input type="text" id="nhsNumber" placeholder="123 456 7890" required>
+      </div>
+      <div class="form-row">
+        <label for="phone">Contact phone</label>
+        <input type="tel" id="phone" placeholder="07XXX XXXXXX">
+      </div>
+      <div class="form-row">
+        <label for="address">Address</label>
+        <textarea id="address" rows="3"></textarea>
+      </div>
+    </form>
+  </article>
+  <article class="card form-card">
+    <h2>Admission details</h2>
+    <form id="admissionForm">
+      <div class="form-row">
+        <label for="admissionDate">Admission date & time *</label>
+        <input type="datetime-local" id="admissionDate" required>
+      </div>
+      <div class="form-row">
+        <label for="ward">Ward * <span class="ward-info">(Gender type shown)</span></label>
+        <select id="ward" required>
+          <option value="">Select ward...</option>
+          <option value="AMU" data-gender="Mixed">🏥 Acute Medical Unit (AMU) - Mixed</option>
+          <option value="CCU" data-gender="Mixed">❤️ Coronary Care Unit (CCU) - Mixed</option>
+          <option value="ICU" data-gender="Mixed">🚨 Intensive Care Unit (ICU) - Mixed</option>
+          <option value="RESP" data-gender="Mixed">🫁 Respiratory Ward (RESP) - Mixed</option>
+          <option value="SSS" data-gender="Mixed">🔪 Short Stay Surgical (SSS) - Mixed</option>
+          <option value="PAED" data-gender="Mixed">👶 Paediatrics (PAED) - Mixed</option>
+          <option value="STK" data-gender="Mixed">🧠 Stroke Unit (STK) - Mixed</option>
+          <option value="ORTH" data-gender="Mixed">🦴 Orthopaedic Ward (ORTH) - Mixed</option>
+          <option value="WARD_A" data-gender="Male">🚹 Ward A - Male Only</option>
+          <option value="WARD_B" data-gender="Female">🚺 Ward B - Female Only</option>
+          <option value="WARD_C" data-gender="Mixed">🏥 Ward C - Mixed</option>
+        </select>
+        <small id="wardGenderError" class="error-message">
+          ⚠️ Gender mismatch! This ward does not accept patients of this gender.
+        </small>
+        <small id="wardGenderInfo" class="info-message">
+          ℹ️ Please select patient sex first to see compatible wards.
+        </small>
+      </div>
+      <div class="form-row">
+        <label for="bed">Bed location *</label>
+        <input type="text" id="bed" placeholder="e.g. Bay 2 – Bed 3" required>
+      </div>
+      <div class="form-row">
+        <label for="consultant">Consultant *</label>
+        <select id="consultant" required>
+          <option value="">Select consultant...</option>
+          <option value="Dr. R. Morgan">Dr. Riley Morgan (Acute Medicine)</option>
+          <option value="Dr. A. Patel">Dr. Aisha Patel (Acute Medicine)</option>
+          <option value="Dr. N. Khan">Dr. Noor Khan (Cardiology)</option>
+          <option value="Dr. J. Khan">Dr. J. Khan (ICU)</option>
+          <option value="Dr. N. Taylor">Dr. N. Taylor (Respiratory)</option>
+          <option value="Dr. P. Ahmed">Dr. Peter Ahmed (Stroke)</option>
+          <option value="Dr. L. Chen">Dr. Laura Chen (Surgery)</option>
+          <option value="Dr. S. Williams">Dr. S. Williams (Paediatrics)</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="diagnosis">Primary diagnosis *</label>
+        <input type="text" id="diagnosis" placeholder="e.g. Community-acquired pneumonia" required>
+      </div>
+      <div class="form-row">
+        <label for="notes">Clinical notes</label>
+        <textarea id="notes" rows="4" placeholder="Additional information, presenting complaint, history..."></textarea>
+      </div>
+    </form>
+  </article>
+</section>
+<section class="action-bar">
+  <button type="button" class="secondary-btn" onclick="window.location.href='/patients'">Cancel</button>
+  <button type="submit" class="primary-btn" id="submitBtn">Add patient</button>
+</section>
+<div class="success-alert" id="successAlert">
+  <span class="alert-icon">✓</span>
+  <span>Patient added successfully!</span>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/add-patient.js"></script>
+{% endblock %}

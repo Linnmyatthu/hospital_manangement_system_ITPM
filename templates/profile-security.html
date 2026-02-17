@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Profile & Security | MyHospital{% endblock %}
+
+{% block active_profile %}active{% endblock %}
+
+{% block page_title %}Profile & security{% endblock %}
+
+{% block page_subtitle %}Update your details and keep your account secure.{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/profile-security.css">
+{% endblock %}
+
+{% block content %}
+<section class="content-grid">
+  <!-- PROFILE CARD -->
+  <section class="card profile-card">
+    <div class="avatar-circle">DR</div>
+    <h2 class="profile-name">Dr. Riley Morgan</h2>
+    <p class="profile-role">Consultant – Acute Medicine</p>
+
+    <form class="profile-form" id="profileForm">
+      <div class="form-row">
+        <label for="fullName">Full name</label>
+        <input type="text" id="fullName" value="Dr. Riley Morgan">
+      </div>
+
+      <div class="form-row">
+        <label for="email">Work email</label>
+        <input type="email" id="email" value="riley.morgan@myhospital.nhs.uk">
+      </div>
+
+      <div class="form-row">
+        <label for="team">Primary team</label>
+        <input type="text" id="team" value="Acute Medical Unit">
+      </div>
+
+      <button type="submit" class="primary-btn">Save profile</button>
+
+      <div class="inline-alert" id="profileSavedAlert">
+        <span class="inline-alert-dot"></span>
+        <span>Profile updated successfully.</span>
+      </div>
+    </form>
+  </section>
+
+  <!-- SECURITY SETTINGS -->
+  <section class="card">
+    <h2 class="card-title">Security</h2>
+    <p class="card-text">Manage your password and extra sign‑in protection.</p>
+
+    <form class="security-form" id="securityForm">
+      <div class="form-row">
+        <label for="currentPassword">Current password</label>
+        <input type="password" id="currentPassword" placeholder="••••••••">
+      </div>
+
+      <div class="form-row">
+        <label for="newPassword">New password</label>
+        <input type="password" id="newPassword" placeholder="At least 8 characters">
+      </div>
+
+      <div class="form-row">
+        <label for="confirmPassword">Confirm new password</label>
+        <input type="password" id="confirmPassword" placeholder="Repeat new password">
+      </div>
+
+      <div class="form-row form-row-inline">
+        <div>
+          <p class="label-inline">Two‑factor authentication</p>
+          <p class="hint">Adds an extra step when signing in from new devices.</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="toggle2FA" checked>
+          <span class="slider round"></span>
+        </label>
+      </div>
+
+      <button type="submit" class="primary-btn">Save security settings</button>
+
+      <div class="inline-alert" id="securitySavedAlert">
+        <span class="inline-alert-dot"></span>
+        <span>Security settings saved.</span>
+      </div>
+    </form>
+  </section>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/profile-security.js"></script>
+{% endblock %}

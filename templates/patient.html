@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Patients - Hospital Management System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/patient.css">
+{% endblock %}
+
+{% block active_patients %}active{% endblock %}
+
+{% block page_title %}Patient Management{% endblock %}
+
+{% block page_subtitle %}View, manage, transfer, and discharge patients.{% endblock %}
+
+{% block top_actions %}
+{{ super() }} <!-- This includes the settings dropdown and default buttons -->
+{% endblock %}
+
+{% block content %}
+<!-- ACTION BUTTONS SECTION - Below page title -->
+<section class="action-buttons-section">
+  <div class="action-buttons-container">
+    <a href="add-patient.html" class="primary-btn">+ Add Patient</a>
+    <input type="text" id="searchInput" class="search-input" placeholder="Search patients...">
+  </div>
+</section>
+
+<!-- PATIENT TABLE -->
+<section class="content-section">
+  <div class="data-card">
+    <div class="data-card-header">
+      <h2>All Patients</h2>
+      <span class="badge badge-info">142 Total Patients</span>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="data-table" id="patientTable">
+        <thead>
+          <tr>
+            <th>Patient ID</th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Age</th>
+            <th>Ward</th>
+            <th>Admission Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>P001</strong></td>
+            <td><a href="patient-detail.html?id=P001" class="patient-link">John Doe</a></td>
+            <td>Male</td>
+            <td>45</td>
+            <td>Ward A</td>
+            <td>2026-02-10</td>
+            <td><span class="status-badge stable">Stable</span></td>
+            <td class="actions">
+              <button onclick="viewPatient('P001')" class="btn-action btn-view" title="View Details">📇</button>
+              <button onclick="openTransferModal('P001', 'John Doe', 'Male', 'Ward A')" class="btn-action btn-transfer"
+                title="Transfer">🔄</button>
+              <button onclick="dischargePatient('P001', 'John Doe')" class="btn-action btn-discharge"
+                title="Discharge">🚪</button>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>P002</strong></td>
+            <td><a href="patient-detail.html?id=P002" class="patient-link">Jane Smith</a></td>
+            <td>Female</td>
+            <td>32</td>
+            <td>Ward B</td>
+            <td>2026-02-11</td>
+            <td><span class="status-badge recovering">Recovering</span></td>
+            <td class="actions">
+              <button onclick="viewPatient('P002')" class="btn-action btn-view" title="View Details">📇</button>
+              <button onclick="openTransferModal('P002', 'Jane Smith', 'Female', 'Ward B')"
+                class="btn-action btn-transfer" title="Transfer">🔄</button>
+              <button onclick="dischargePatient('P002', 'Jane Smith')" class="btn-action btn-discharge"
+                title="Discharge">🚪</button>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>P003</strong></td>
+            <td><a href="patient-detail.html?id=P003" class="patient-link">Robert Johnson</a></td>
+            <td>Male</td>
+            <td>67</td>
+            <td>ICU</td>
+            <td>2026-02-09</td>
+            <td><span class="status-badge critical">Critical</span></td>
+            <td class="actions">
+              <button onclick="viewPatient('P003')" class="btn-action btn-view" title="View Details">📇</button>
+              <button onclick="openTransferModal('P003', 'Robert Johnson', 'Male', 'ICU')"
+                class="btn-action btn-transfer" title="Transfer">🔄</button>
+              <button onclick="dischargePatient('P003', 'Robert Johnson')" class="btn-action btn-discharge"
+                title="Discharge">🚪</button>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>P004</strong></td>
+            <td><a href="patient-detail.html?id=P004" class="patient-link">Emily Brown</a></td>
+            <td>Female</td>
+            <td>28</td>
+            <td>Ward C</td>
+            <td>2026-02-12</td>
+            <td><span class="status-badge stable">Stable</span></td>
+            <td class="actions">
+              <button onclick="viewPatient('P004')" class="btn-action btn-view" title="View Details">📇</button>
+              <button onclick="openTransferModal('P004', 'Emily Brown', 'Female', 'Ward C')"
+                class="btn-action btn-transfer" title="Transfer">🔄</button>
+              <button onclick="dischargePatient('P004', 'Emily Brown')" class="btn-action btn-discharge"
+                title="Discharge">🚪</button>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>P005</strong></td>
+            <td><a href="patient-detail.html?id=P005" class="patient-link">Michael Davis</a></td>
+            <td>Male</td>
+            <td>54</td>
+            <td>Ward A</td>
+            <td>2026-02-08</td>
+            <td><span class="status-badge recovering">Recovering</span></td>
+            <td class="actions">
+              <button onclick="viewPatient('P005')" class="btn-action btn-view" title="View Details">📇</button>
+              <button onclick="openTransferModal('P005', 'Michael Davis', 'Male', 'Ward A')"
+                class="btn-action btn-transfer" title="Transfer">🔄</button>
+              <button onclick="dischargePatient('P005', 'Michael Davis')" class="btn-action btn-discharge"
+                title="Discharge">🚪</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- TRANSFER MODAL -->
+<div id="transferModal" class="modal">
+  <div class="modal-overlay" onclick="closeTransferModal()"></div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Transfer Patient</h3>
+        <button class="modal-close" onclick="closeTransferModal()">&times;</button>
+      </div>
+
+      <form id="transferForm" onsubmit="return submitTransfer(event)">
+        <div class="modal-body">
+          <input type="hidden" id="transferPatientId">
+          <input type="hidden" id="transferPatientGender">
+
+          <div class="form-group">
+            <label>Patient Name</label>
+            <input type="text" id="transferPatientName" class="form-input" readonly>
+          </div>
+
+          <div class="form-group">
+            <label>Current Ward</label>
+            <input type="text" id="currentWard" class="form-input" readonly>
+          </div>
+
+          <div class="form-group">
+            <label>Select New Ward <span class="required">*</span></label>
+            <select id="newWardSelect" class="form-input" required>
+              <option value="">-- Select Ward --</option>
+              <option value="1" data-gender="Male">Ward A - Male Ward</option>
+              <option value="2" data-gender="Female">Ward B - Female Ward</option>
+              <option value="3" data-gender="Mixed">Ward C - Mixed Ward</option>
+              <option value="4" data-gender="Mixed">ICU - Mixed</option>
+            </select>
+            <small id="wardGenderError" class="error-text">
+              ⚠️ Gender mismatch! This ward is for different gender.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label>Reason for Transfer <span class="required">*</span></label>
+            <textarea id="transferReason" class="form-input" rows="4" required
+              placeholder="Enter reason for transfer..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" onclick="closeTransferModal()">Cancel</button>
+          <button type="submit" class="btn-primary">Transfer Patient</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/patient.js"></script>
+{% endblock %}

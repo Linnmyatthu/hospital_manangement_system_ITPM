@@ -1,0 +1,298 @@
+/* patient-detail.css - only patient detail specific styles */
+
+/* BACK BUTTON */
+.back-btn {
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  background: var(--bg-main);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  background: var(--bg-hero);
+  border-color: var(--accent);
+}
+
+/* CONTENT SECTIONS */
+.content-section {
+  margin-bottom: 1.3rem;
+}
+
+/* INFO CARD */
+.info-card {
+  background: var(--bg-card);
+  border-radius: 18px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.info-card-header {
+  padding: 1.2rem 1.5rem;
+  background: linear-gradient(135deg, #3d5941, #88b06a);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-card-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+/* PATIENT INFO GRID */
+.patient-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  padding: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1rem;
+  background: var(--bg-hero);
+  border-radius: 12px;
+  border-left: 4px solid var(--accent);
+}
+
+.info-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.info-value {
+  font-size: 1.05rem;
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+/* STATUS BADGES */
+.status-badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-badge.stable {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-badge.recovering {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.status-badge.critical {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* DATA CARD */
+.data-card {
+  background: var(--bg-card);
+  border-radius: 18px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.data-card-header {
+  padding: 1.2rem 1.5rem;
+  background: linear-gradient(135deg, #3d5941, #88b06a);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.data-card-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.badge {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-info {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+/* TABLE */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table thead {
+  background: var(--bg-feature);
+}
+
+.data-table thead th {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 2px solid var(--border-subtle);
+}
+
+.data-table tbody tr {
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background 0.2s ease;
+}
+
+.data-table tbody tr:hover {
+  background: var(--bg-hero);
+}
+
+.data-table tbody td {
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+
+/* DOCTORS GRID */
+.doctors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.2rem;
+  padding: 1.5rem;
+}
+
+.doctor-card {
+  display: flex;
+  gap: 1rem;
+  padding: 1.2rem;
+  background: var(--bg-hero);
+  border-radius: 12px;
+  border: 2px solid var(--border-subtle);
+  transition: all 0.3s ease;
+}
+
+.doctor-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.doctor-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.doctor-info {
+  flex: 1;
+}
+
+.doctor-info h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  color: var(--accent);
+}
+
+.doctor-specialty {
+  margin: 0 0 0.3rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.doctor-contact,
+.doctor-email {
+  margin: 0.2rem 0;
+  font-size: 0.8rem;
+  color: var(--text-main);
+}
+
+/* RESPONSIVE - only patient detail specific */
+@media (max-width: 960px) {
+  .patient-info-grid { 
+    grid-template-columns: repeat(2, 1fr); 
+  }
+  
+  .doctors-grid { 
+    grid-template-columns: 1fr; 
+  }
+  
+  .data-table {
+    font-size: 0.85rem;
+  }
+  
+  .data-table thead th,
+  .data-table tbody td {
+    padding: 0.7rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .patient-info-grid { 
+    grid-template-columns: 1fr; 
+  }
+  
+  .info-item {
+    padding: 0.8rem;
+  }
+  
+  .doctor-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .doctor-avatar {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+}
+
+/* PRINT STYLES */
+@media print {
+  .back-btn {
+    display: none;
+  }
+  
+  .info-card,
+  .data-card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    page-break-inside: avoid;
+  }
+  
+  .patient-info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

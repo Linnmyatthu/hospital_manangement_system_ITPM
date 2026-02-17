@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Manage doctors | MyHospital{% endblock %}
+
+{% block active_teams %}active{% endblock %}
+
+{% block page_title %}Manage doctors{% endblock %}
+
+{% block page_subtitle %}Add, edit, and view all medical staff across specialties and grades.{% endblock %}
+
+{% block header_content %}
+<a href="/teams" class="back-link">← Back to teams</a>
+{% endblock %}
+
+{% block top_actions %}
+<button class="primary-btn" id="addDoctorBtn">Add new doctor</button>
+{{ super() }}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/manage-doctors.css">
+{% endblock %}
+
+{% block content %}
+<!-- Summary Cards -->
+<section class="summary-row">
+  <article class="summary-card">
+    <h2>Total doctors</h2>
+    <p class="summary-value">84</p>
+    <p class="summary-label">Across all specialties</p>
+  </article>
+  <article class="summary-card">
+    <h2>Consultants</h2>
+    <p class="summary-value">24</p>
+    <p class="summary-label">Lead clinicians</p>
+  </article>
+  <article class="summary-card">
+    <h2>On duty today</h2>
+    <p class="summary-value">62</p>
+    <p class="summary-label">Currently working</p>
+  </article>
+</section>
+
+<!-- Doctor Directory Table -->
+<section class="table-card">
+  <div class="table-card-header">
+    <div>
+      <h2>Doctor directory</h2>
+      <p>Search by name, specialty, or grade to find medical staff.</p>
+    </div>
+    <div class="table-actions">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="doctorSearch" placeholder="Search by name, specialty or grade..." autocomplete="off" />
+      </div>
+      <select id="gradeFilter" class="status-filter">
+        <option value="all">All grades</option>
+        <option value="Consultant">Consultant</option>
+        <option value="Registrar">Registrar</option>
+        <option value="Junior">Junior doctor</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="table-scroll">
+    <table class="data-table" id="doctorsTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Grade</th>
+          <th>Specialty</th>
+          <th>Team</th>
+          <th>Primary ward</th>
+          <th>Pager</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Dr. Riley Morgan</td>
+          <td><span class="grade-badge consultant">Consultant</span></td>
+          <td>Acute Medicine</td>
+          <td>Acute Medical Team A</td>
+          <td>AMU</td>
+          <td>2301</td>
+          <td>riley.morgan@hospital.nhs.uk</td>
+          <td><button class="action-btn edit-btn" data-id="1">Edit</button></td>
+        </tr>
+        <tr>
+          <td>Dr. Aisha Patel</td>
+          <td><span class="grade-badge registrar">ST7 Registrar</span></td>
+          <td>Acute Medicine</td>
+          <td>Acute Medical Team A</td>
+          <td>AMU</td>
+          <td>2302</td>
+          <td>aisha.patel@hospital.nhs.uk</td>
+          <td><button class="action-btn edit-btn" data-id="2">Edit</button></td>
+        </tr>
+        <tr>
+          <td>Dr. James Lee</td>
+          <td><span class="grade-badge junior">FY2</span></td>
+          <td>General Medicine</td>
+          <td>Acute Medical Team A</td>
+          <td>AMU</td>
+          <td>2303</td>
+          <td>james.lee@hospital.nhs.uk</td>
+          <td><button class="action-btn edit-btn" data-id="3">Edit</button></td>
+        </tr>
+        <tr>
+          <td>Dr. Noor Khan</td>
+          <td><span class="grade-badge consultant">Consultant</span></td>
+          <td>Cardiology</td>
+          <td>Cardiology Team</td>
+          <td>CCU</td>
+          <td>2401</td>
+          <td>noor.khan@hospital.nhs.uk</td>
+          <td><button class="action-btn edit-btn" data-id="4">Edit</button></td>
+        </tr>
+        <tr>
+          <td>Dr. Sophie Green</td>
+          <td><span class="grade-badge registrar">ST5 Registrar</span></td>
+          <td>Cardiology</td>
+          <td>Cardiology Team</td>
+          <td>CCU</td>
+          <td>2402</td>
+          <td>sophie.green@hospital.nhs.uk</td>
+          <td><button class="action-btn edit-btn" data-id="5">Edit</button></td>
+        </tr>
+        <tr>
+          <td>Dr. Daniel Brooks</td>
+          <td><span class="grade-badge consultant">Consultant</span></td>
+          <td>Respiratory</td>
+          <td>Respiratory Team</td>
+          <td>RESP</td>
+          <td>2501</td>
+          <td>daniel.brooks@hospital.nhs.uk</td>
+          <td><button class="action-btn edit-btn" data-id="6">Edit</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="no-results" id="doctorsNoResults">No doctors match your search or filter.</div>
+  </div>
+</section>
+
+<!-- Add/Edit Doctor Modal -->
+<div class="modal" id="doctorModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modalTitle">Add new doctor</h2>
+      <button class="modal-close" id="modalClose">&times;</button>
+    </div>
+    <form id="doctorForm">
+      <div class="form-row">
+        <label for="doctorName">Full name *</label>
+        <input type="text" id="doctorName" required>
+      </div>
+      <div class="form-row">
+        <label for="doctorGrade">Grade *</label>
+        <select id="doctorGrade" required>
+          <option value="">Select grade...</option>
+          <option value="Consultant">Consultant</option>
+          <option value="ST7">ST7 Registrar</option>
+          <option value="FY2">FY2</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="doctorSpecialty">Specialty *</label>
+        <input type="text" id="doctorSpecialty" required>
+      </div>
+      <div class="form-row">
+        <label for="doctorTeam">Team *</label>
+        <select id="doctorTeam" required>
+          <option value="">Select team...</option>
+          <option value="Acute Medical Team A">Acute Medical Team A</option>
+          <option value="Cardiology Team">Cardiology Team</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="doctorWard">Primary ward</label>
+        <input type="text" id="doctorWard">
+      </div>
+      <div class="form-row">
+        <label for="doctorPager">Pager number</label>
+        <input type="text" id="doctorPager">
+      </div>
+      <div class="form-row">
+        <label for="doctorEmail">Email</label>
+        <input type="email" id="doctorEmail">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="secondary-btn" id="modalCancel">Cancel</button>
+        <button type="submit" class="primary-btn">Save doctor</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/manage-doctors.js"></script>
+{% endblock %}
