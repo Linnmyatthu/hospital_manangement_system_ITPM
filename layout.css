@@ -1,0 +1,215 @@
+/* layout.css */
+
+/* Base */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #1f3c5d 0, #051321 55%, #020813 100%);
+  color: #f5f7fb;
+}
+
+/* Layout */
+.app-shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  background: linear-gradient(180deg, #071b2f 0%, #050f1c 100%);
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.sidebar-logo h1 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+/* Sidebar links with hover */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.6rem;
+  color: #c6d4f5;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+}
+
+.sidebar-nav a:hover {
+  background: linear-gradient(90deg, #23507b, #1c7d88);
+  color: #ffffff;
+  transform: translateX(3px);
+}
+
+.sidebar-nav a.active {
+  background: linear-gradient(90deg, #1f456c, #176f77);
+  color: #ffffff;
+}
+
+/* Main area */
+.main {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1.75rem 1rem;
+}
+
+/* Top bar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.topbar-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+/* Section grid */
+.page-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+/* Cards / sections with hover */
+.card {
+  background: radial-gradient(circle at top left, #294a74 0, #122437 38%, #0a1623 100%);
+  border-radius: 1rem;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  border-color: rgba(134, 222, 255, 0.5);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.card-subtitle {
+  font-size: 0.8rem;
+  color: #95a8d6;
+}
+
+/* Buttons & links (with hover) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-decoration: none;
+  background: linear-gradient(135deg, #2bc6a4, #25a1f2);
+  color: #04101f;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.4);
+  filter: brightness(1.08);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #dbe6ff;
+  border: 1px solid rgba(219, 230, 255, 0.3);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #ff5f6d, #d9364f);
+  color: #fff;
+}
+
+/* Tables inside cards */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.table th,
+.table td {
+  padding: 0.45rem 0.3rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.table th {
+  text-align: left;
+  color: #aab7e5;
+  font-weight: 500;
+}
+
+/* Footer */
+.footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  font-size: 0.8rem;
+  color: #93a1c6;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer a {
+  color: #c4d5ff;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}

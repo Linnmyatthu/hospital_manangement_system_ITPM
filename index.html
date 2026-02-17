@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard – Hospital Ward Management</title>
+  <link rel="stylesheet" href="layout.css">
+  
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h1>MyHospital</h1>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="index.html" class="active">Home</a>
+        <a href="wards.html">Wards</a>
+        <a href="teams.html">Teams</a>
+        <a href="record-treatment.html">Record treatment</a>
+        <a href="manage-doctors.html">Manage doctors</a>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-title">Dashboard</div>
+      </header>
+
+      <section class="page-grid">
+        <!-- Card: Wards -->
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">View wards</div>
+              <div class="card-subtitle">See all wards, type and capacity.</div>
+            </div>
+          </div>
+          <p>Browse every ward and open the patient list for each ward when needed.</p>
+          <a href="wards.html" class="btn">Go to wards</a>
+        </article>
+
+        <!-- Card: Teams -->
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">View teams</div>
+              <div class="card-subtitle">Clinical teams and consultants.</div>
+            </div>
+          </div>
+          <p>Check all teams, their codes and consultants, and the patients they care for.</p>
+          <a href="teams.html" class="btn">Go to teams</a>
+        </article>
+
+        <!-- Card: Record treatment -->
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Record treatment</div>
+              <div class="card-subtitle">Log who treated which patient.</div>
+            </div>
+          </div>
+          <p>Record new treatments by selecting a patient and doctor and entering details.</p>
+          <a href="record-treatment.html" class="btn">Open form</a>
+        </article>
+
+        <!-- Card: Admin / manage doctors -->
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Manage doctors & teams</div>
+              <div class="card-subtitle">Maintain team structure.</div>
+            </div>
+          </div>
+          <p>Create or update teams, set consultants and allocate doctors to each team.</p>
+          <a href="manage-doctors.html" class="btn">Manage now</a>
+        </article>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <span>© 2026 MyHospital Ward System</span>
+        <span><a href="#">Help</a> · <a href="#">Privacy</a></span>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

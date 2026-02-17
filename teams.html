@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Teams – Hospital Ward Management</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+  <h1>Hospital Ward Management</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="wards.html">Wards</a>
+    <a href="teams.html">Teams</a>
+    <a href="record-treatment.html">Record Treatment</a>
+    <a href="manage-doctors.html">Manage Doctors</a>
+  </nav>
+</header>
+
+  <main>
+    <div class="card">
+      <h2>Teams list</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Team code</th>
+            <th>Team name</th>
+            <th>Consultant</th>
+            <th>Patients</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>T01</td>
+            <td>Respiratory Team</td>
+            <td>Dr Green</td>
+            <td><a class="btn btn-secondary" href="team-patients.html?team=T01">View team patients</a></td>
+          </tr>
+          <tr>
+            <td>T02</td>
+            <td>Cardiology Team</td>
+            <td>Dr Brown</td>
+            <td><a class="btn btn-secondary" href="team-patients.html?team=T02">View team patients</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>

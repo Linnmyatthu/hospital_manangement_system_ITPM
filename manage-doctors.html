@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage doctors and teams</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <h1>Hospital Ward Management</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="wards.html">Wards</a>
+    <a href="teams.html">Teams</a>
+    <a href="record-treatment.html">Record Treatment</a>
+    <a href="manage-doctors.html">Manage Doctors</a>
+  </nav>
+</header>
+
+  <main>
+    <div class="card">
+      <h2>Manage teams</h2>
+      <form>
+        <label>Team code: <input type="text" name="code"></label><br><br>
+        <label>Team name: <input type="text" name="name"></label><br><br>
+        <label>Consultant: <input type="text" name="consultant"></label><br><br>
+        <button type="submit">Save team</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Allocate doctors to team</h2>
+      <form>
+        <label>Team:
+          <select>
+            <option>T01 – Respiratory</option>
+            <option>T02 – Cardiology</option>
+          </select>
+        </label><br><br>
+        <label>Doctor name: <input type="text"></label><br><br>
+        <label>Grade:
+          <select>
+            <option>Consultant</option>
+            <option>Registrar</option>
+            <option>SHO</option>
+            <option>FY1</option>
+          </select>
+        </label><br><br>
+        <button type="submit">Add doctor</button>
+      </form>
+    </div>
+  </main>
+</body>
+</html>
