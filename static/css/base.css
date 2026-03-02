@@ -136,7 +136,7 @@ body {
 .main-area {
     background: var(--bg-page);
     display: grid;
-    grid-template-rows: auto auto auto 1fr auto;
+    grid-template-rows: auto 1fr auto;
     padding: 1.5rem 1.8rem 1.8rem;
 }
 
@@ -146,7 +146,7 @@ body {
     justify-content: space-between;
     align-items: flex-start;
     gap: 1rem;
-    margin-bottom: 1.3rem;
+    margin-bottom: 0.8rem;
 }
 
 .top-left {

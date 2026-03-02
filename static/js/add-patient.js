@@ -128,12 +128,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* FORM SUBMISSION */
+  /* FORM SUBMISSION – REAL FETCH TO BACKEND */
   if (submitBtn) {
     submitBtn.addEventListener('click', (e) => {
       e.preventDefault();
 
-      // Validate all required fields
+      // ---- Validation (unchanged) ----
       const firstName = document.getElementById('firstName').value.trim();
       const lastName = document.getElementById('lastName').value.trim();
       const dob = document.getElementById('dob').value;
@@ -145,89 +145,73 @@ document.addEventListener('DOMContentLoaded', () => {
       const consultant = document.getElementById('consultant').value;
       const diagnosis = document.getElementById('diagnosis').value.trim();
 
-      // Check required fields
       if (!firstName) {
         alert('⚠️ Please enter patient first name');
         document.getElementById('firstName').focus();
         return;
       }
-
       if (!lastName) {
         alert('⚠️ Please enter patient last name');
         document.getElementById('lastName').focus();
         return;
       }
-
       if (!dob) {
         alert('⚠️ Please enter date of birth');
         document.getElementById('dob').focus();
         return;
       }
-
       if (!sex) {
         alert('⚠️ Please select patient sex');
         document.getElementById('sex').focus();
         return;
       }
-
       if (!nhsNumber) {
         alert('⚠️ Please enter NHS number');
         document.getElementById('nhsNumber').focus();
         return;
       }
-
       if (!admissionDate) {
         alert('⚠️ Please enter admission date and time');
         document.getElementById('admissionDate').focus();
         return;
       }
-
       if (!ward) {
         alert('⚠️ Please select a ward');
         document.getElementById('ward').focus();
         return;
       }
-
       if (!bed) {
         alert('⚠️ Please enter bed location');
         document.getElementById('bed').focus();
         return;
       }
-
       if (!consultant) {
         alert('⚠️ Please select a consultant');
         document.getElementById('consultant').focus();
         return;
       }
-
       if (!diagnosis) {
         alert('⚠️ Please enter primary diagnosis');
         document.getElementById('diagnosis').focus();
         return;
       }
 
-      // Validate ward gender compatibility
       if (!validateWardGender()) {
         alert('❌ Cannot admit patient!\n\nWard gender type does not match patient sex.\n\nPlease select a compatible ward:\n• Male patients → Male or Mixed wards\n• Female patients → Female or Mixed wards\n• Other → Mixed wards only');
         document.getElementById('ward').focus();
         return;
       }
 
-      // Get optional fields
+      // Optional fields
       const phone = document.getElementById('phone').value.trim();
       const address = document.getElementById('address').value.trim();
       const notes = document.getElementById('notes').value.trim();
       const age = document.getElementById('age').value;
 
-      // Get ward and consultant names
-      const wardName = wardSelect.options[wardSelect.selectedIndex].text;
-      const consultantName = document.getElementById('consultant').options[document.getElementById('consultant').selectedIndex].text;
-
-      // Create patient object
+      // Prepare data – only what the backend expects
       const patientData = {
         firstName,
         lastName,
-        fullName: `${firstName} ${lastName}`,
         dob,
         age,
         sex,
@@ -235,43 +219,49 @@ document.addEventListener('DOMContentLoaded', () => {
         phone,
         address,
         admissionDate,
-        ward,
-        wardName,
+        ward,          // Ward ID (or code, depending on your backend)
         bed,
-        consultant,
-        consultantName,
+        consultant,    // Doctor ID (or code)
         diagnosis,
-        notes,
-        timestamp: new Date().toISOString(),
-        status: 'Active'
+        notes
       };
 
-      // In a real application, you would send this data to your backend
-      // Example: fetch('/api/patients', { method: 'POST', body: JSON.stringify(patientData) })
-      console.log('Patient data to be submitted:', patientData);
+      // Disable button while submitting
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving...';
 
-      // Show success message
-      if (successAlert) {
-        successAlert.style.display = 'flex';
-      }
-      
-      // Simulate saving and redirect
-      setTimeout(() => {
-        const sexLabel = sex === 'M' ? 'Male' : sex === 'F' ? 'Female' : 'Other';
-        
-        alert(`✅ Patient Added Successfully!\n\n` +
-              `Name: ${firstName} ${lastName}\n` +
-              `Sex: ${sexLabel}\n` +
-              `Age: ${age} years\n` +
-              `NHS Number: ${nhsNumber}\n` +
-              `Ward: ${wardName}\n` +
-              `Bed: ${bed}\n` +
-              `Consultant: ${consultantName}\n` +
-              `Diagnosis: ${diagnosis}\n\n` +
-              `Redirecting to patient list...`);
-        
-        window.location.href = 'patient.html';
-      }, 1500);
+      // Send to Flask
+      fetch('/patients/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(patientData)
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => { throw new Error(err.message || 'Server error'); });
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Patient saved:', data);
+
+        // Show success message
+        if (successAlert) {
+          successAlert.style.display = 'flex';
+        }
+
+        // Redirect after a short delay
+        setTimeout(() => {
+          window.location.href = '/patients';
+        }, 1500);
+      })
+      .catch(error => {
+        console.error('Error saving patient:', error);
+        alert('❌ Failed to add patient: ' + error.message);
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add patient';
+      });
     });
   }
 
@@ -279,11 +269,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const lightModeToggle = document.getElementById('lightModeToggle');
   if (lightModeToggle) {
     lightModeToggle.addEventListener('click', () => {
-      // Check if theme.js provides the function
       if (typeof toggleThemeFromButton === 'function') {
         toggleThemeFromButton();
       } else {
-        // Fallback if theme.js is not available
         const html = document.documentElement;
         const currentTheme = html.getAttribute('data-theme');
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -298,19 +286,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const nhsNumberInput = document.getElementById('nhsNumber');
   if (nhsNumberInput) {
     nhsNumberInput.addEventListener('input', (e) => {
-      // Remove all non-digits
-      let value = e.target.value.replace(/\D/g, '');
-      
-      // Limit to 10 digits
-      value = value.substring(0, 10);
-      
-      // Format as XXX XXX XXXX
+      let value = e.target.value.replace(/\D/g, '').substring(0, 10);
       if (value.length > 6) {
         value = value.substring(0, 3) + ' ' + value.substring(3, 6) + ' ' + value.substring(6);
       } else if (value.length > 3) {
         value = value.substring(0, 3) + ' ' + value.substring(3);
       }
-      
       e.target.value = value;
     });
   }
@@ -319,17 +300,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const phoneInput = document.getElementById('phone');
   if (phoneInput) {
     phoneInput.addEventListener('input', (e) => {
-      // Remove all non-digits
-      let value = e.target.value.replace(/\D/g, '');
-      
-      // Limit to 11 digits (UK phone)
-      value = value.substring(0, 11);
-      
-      // Format as 07XXX XXXXXX
+      let value = e.target.value.replace(/\D/g, '').substring(0, 11);
       if (value.length > 5) {
         value = value.substring(0, 5) + ' ' + value.substring(5);
       }
-      
       e.target.value = value;
     });
   }

@@ -1,96 +1,89 @@
-/* patient.css - only patient page specific styles */
 
-/* Keep this if you need it for responsive tables */
-.data-table td:before {
-    content: attr(data-label);
-    font-weight: 600;
-    width: 120px;
-    min-width: 120px;
-    color: var(--text-muted);
-    display: inline-block;
-}
-
-/* ACTION BUTTONS SECTION */
-.action-buttons-section {
-    margin-bottom: 1.5rem;
-}
-
-.action-buttons-container {
+.table-card {
+    background: var(--bg-main);
+    border-radius: 18px;
+    padding: 1.2rem 1.4rem;
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-soft);
     display: flex;
+    flex-direction: column;
+    margin-top: 0;          /* ensure no extra top margin */
+}
+
+/* ===== CARD HEADER (title + actions) ===== */
+.table-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     gap: 1rem;
+    margin-bottom: 0.8rem;  /* space between header and table */
+}
+
+.table-card-header h2 {
+    margin: 0 0 0.25rem;
+    font-size: 1.05rem;
+}
+
+.table-card-header p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* ===== ACTION BUTTONS + SEARCH (inside header) ===== */
+.table-actions {
+    display: flex;
     align-items: center;
-    flex-wrap: wrap;
+    gap: 0.6rem;
+    flex-wrap: wrap;        /* allows wrapping on small screens */
 }
 
 .primary-btn {
-    padding: 0.6rem 1.2rem;
+    padding: 0.5rem 1rem;   /* slightly smaller to match search height */
     background: var(--accent);
     color: white;
     border: none;
     border-radius: 8px;
     text-decoration: none;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: background 0.2s;
+    white-space: nowrap;    /* prevent button text from wrapping */
 }
 
 .primary-btn:hover {
     background: var(--accent-soft);
 }
 
-.search-input {
-    padding: 0.6rem 1rem;
+/* ===== SEARCH WRAPPER ===== */
+.search-wrapper {
+    position: relative;
+}
+
+.search-wrapper .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+.search-wrapper input {
+    padding: 0.5rem 1rem 0.5rem 2.2rem;  /* adjusted for icon */
     border: 1px solid var(--border-subtle);
     border-radius: 8px;
     background: var(--bg-main);
     color: var(--text-main);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     min-width: 250px;
-    flex: 1;
+    width: 100%;
 }
 
-/* PATIENT TABLE */
-.content-section {
-    margin-bottom: 2rem;
-}
-
-.data-card {
-    background: var(--bg-card);
-    border-radius: 12px;
-    border: 1px solid var(--border-subtle);
-    box-shadow: var(--shadow-soft);
-    overflow: hidden;
-}
-
-.data-card-header {
-    padding: 1rem 1.5rem;
-    background: var(--bg-feature);
-    border-bottom: 1px solid var(--border-subtle);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.data-card-header h2 {
-    margin: 0;
-    font-size: 1.2rem;
-}
-
-.badge {
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.badge-info {
-    background: var(--accent);
-    color: white;
-}
-
-.table-wrapper {
+/* ===== TABLE STYLES ===== */
+.table-scroll {
     overflow-x: auto;
-    padding: 0 1rem;
 }
 
 .data-table {
@@ -121,7 +114,7 @@
     background: var(--bg-hero);
 }
 
-/* PATIENT LINK */
+/* Patient name link */
 .patient-link {
     color: var(--accent);
     text-decoration: none;
@@ -132,7 +125,7 @@
     text-decoration: underline;
 }
 
-/* STATUS BADGES */
+/* ===== STATUS BADGES ===== */
 .status-badge {
     display: inline-block;
     padding: 0.25rem 0.8rem;
@@ -156,7 +149,7 @@
     color: #721c24;
 }
 
-/* ACTION BUTTONS IN TABLE */
+/* ===== ACTION BUTTONS IN TABLE ===== */
 .actions {
     display: flex;
     gap: 0.5rem;
@@ -197,7 +190,15 @@
     color: #d32f2f;
 }
 
-/* MODAL */
+/* ===== NO RESULTS MESSAGE ===== */
+.no-results {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* ===== MODAL STYLES (unchanged) ===== */
 .modal {
     display: none;
     position: fixed;
@@ -208,7 +209,7 @@
     z-index: 10000;
 }
 
-.modal.show {
+.modal.open {
     display: block;
 }
 
@@ -270,7 +271,7 @@
     gap: 1rem;
 }
 
-/* FORM ELEMENTS */
+/* ===== FORM ELEMENTS (for modals) ===== */
 .form-group {
     margin-bottom: 1.2rem;
 }
@@ -342,28 +343,34 @@ textarea.form-input {
     background: var(--bg-hero);
 }
 
-/* RESPONSIVE */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-    .action-buttons-container {
+    .table-card-header {
         flex-direction: column;
         align-items: stretch;
     }
-    
-    .search-input {
+
+    .table-actions {
+        justify-content: flex-start;
+    }
+
+    .search-wrapper input {
+        min-width: auto;
         width: 100%;
     }
-    
+
     .data-table {
         font-size: 0.85rem;
     }
-    
+
     .actions {
         flex-wrap: wrap;
     }
-    
+
     .btn-action {
         width: 28px;
         height: 28px;
         font-size: 1rem;
     }
 }
+
