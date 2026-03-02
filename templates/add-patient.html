@@ -15,21 +15,8 @@
 {% endblock %}
 
 {% block top_actions %}
-<!-- Override top actions to remove shortcuts on this page -->
-<div class="settings-wrapper">
-  <button class="settings-btn" id="settingsToggle">
-    Settings ▾
-  </button>
-  <div class="settings-menu" id="settingsMenu">
-    <button class="settings-item" id="lightModeToggle">Dark mode</button>
-    <button class="settings-item" onclick="location.href='/notifications'">
-      Notification settings
-    </button>
-    <button class="settings-item" onclick="location.href='/profile'">
-      Profile & security
-    </button>
-  </div>
-</div>
+<!-- Shortcuts are now inherited from base.html -->
+{{ super() }}
 {% endblock %}
 
 {% block content %}
@@ -88,19 +75,14 @@
       </div>
       <div class="form-row">
         <label for="ward">Ward * <span class="ward-info">(Gender type shown)</span></label>
+        <!-- DYNAMIC WARD DROPDOWN from Flask -->
         <select id="ward" required>
           <option value="">Select ward...</option>
-          <option value="AMU" data-gender="Mixed">🏥 Acute Medical Unit (AMU) - Mixed</option>
-          <option value="CCU" data-gender="Mixed">❤️ Coronary Care Unit (CCU) - Mixed</option>
-          <option value="ICU" data-gender="Mixed">🚨 Intensive Care Unit (ICU) - Mixed</option>
-          <option value="RESP" data-gender="Mixed">🫁 Respiratory Ward (RESP) - Mixed</option>
-          <option value="SSS" data-gender="Mixed">🔪 Short Stay Surgical (SSS) - Mixed</option>
-          <option value="PAED" data-gender="Mixed">👶 Paediatrics (PAED) - Mixed</option>
-          <option value="STK" data-gender="Mixed">🧠 Stroke Unit (STK) - Mixed</option>
-          <option value="ORTH" data-gender="Mixed">🦴 Orthopaedic Ward (ORTH) - Mixed</option>
-          <option value="WARD_A" data-gender="Male">🚹 Ward A - Male Only</option>
-          <option value="WARD_B" data-gender="Female">🚺 Ward B - Female Only</option>
-          <option value="WARD_C" data-gender="Mixed">🏥 Ward C - Mixed</option>
+          {% for ward in wards %}
+          <option value="{{ ward.id }}" data-gender="{{ ward.gender_type|default('Mixed') }}">
+            {{ ward.name }} ({{ ward.gender_type|default('Mixed') }})
+          </option>
+          {% endfor %}
         </select>
         <small id="wardGenderError" class="error-message">
           ⚠️ Gender mismatch! This ward does not accept patients of this gender.
@@ -115,16 +97,12 @@
       </div>
       <div class="form-row">
         <label for="consultant">Consultant *</label>
+        <!-- DYNAMIC DOCTOR DROPDOWN from Flask -->
         <select id="consultant" required>
           <option value="">Select consultant...</option>
-          <option value="Dr. R. Morgan">Dr. Riley Morgan (Acute Medicine)</option>
-          <option value="Dr. A. Patel">Dr. Aisha Patel (Acute Medicine)</option>
-          <option value="Dr. N. Khan">Dr. Noor Khan (Cardiology)</option>
-          <option value="Dr. J. Khan">Dr. J. Khan (ICU)</option>
-          <option value="Dr. N. Taylor">Dr. N. Taylor (Respiratory)</option>
-          <option value="Dr. P. Ahmed">Dr. Peter Ahmed (Stroke)</option>
-          <option value="Dr. L. Chen">Dr. Laura Chen (Surgery)</option>
-          <option value="Dr. S. Williams">Dr. S. Williams (Paediatrics)</option>
+          {% for doctor in doctors %}
+          <option value="{{ doctor.id }}">{{ doctor.name }}</option>
+          {% endfor %}
         </select>
       </div>
       <div class="form-row">
@@ -140,7 +118,7 @@
 </section>
 <section class="action-bar">
   <button type="button" class="secondary-btn" onclick="window.location.href='/patients'">Cancel</button>
-  <button type="submit" class="primary-btn" id="submitBtn">Add patient</button>
+  <button type="button" class="primary-btn" id="submitBtn">Add patient</button>
 </section>
 <div class="success-alert" id="successAlert">
   <span class="alert-icon">✓</span>

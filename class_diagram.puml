@@ -1,0 +1,144 @@
+@startuml
+!theme plain
+left to right direction
+skinparam linetype ortho
+skinparam dpi 300
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 16
+skinparam class {
+  BackgroundColor White
+  BorderColor Black
+  FontSize 16
+  AttributeFontSize 14
+  Padding 10
+  MinWidth 220
+}
+skinparam arrow {
+  Color Black
+  Thickness 2
+  FontSize 13
+}
+skinparam nodesep 60
+skinparam ranksep 80
+
+' ===== Core Classes =====
+
+together {
+  class Ward {
+    - code: String
+    - name: String
+    - type: WardType
+    - totalBeds: int
+    - occupiedBeds: int
+    + getOccupancy(): float
+    + admitPatient(p: Patient, b: Bed): boolean
+    + dischargePatient(p: Patient): void
+    + calculateCapacityStatus(): String
+  }
+
+  enum WardType <<enumeration>> {
+    MALE
+    FEMALE
+    MIXED
+    ICU
+  }
+}
+
+together {
+  class Bed {
+    - bedNumber: int
+    - status: BedStatus
+    + assignPatient(p: Patient): void
+    + freeBed(): void
+    + getStatus(): BedStatus
+  }
+
+  enum BedStatus <<enumeration>> {
+    OCCUPIED
+    FREE
+    MAINTENANCE
+  }
+}
+
+together {
+  class Patient {
+    - patientID: String
+    - name: String
+    - gender: Gender
+    - age: int
+    - status: PatientStatus
+    + admit(w: Ward, b: Bed): void
+    + discharge(): void
+    + transferTo(newWard: Ward, newBed: Bed): boolean
+    + getCurrentAdmission(): Admission
+    + getTreatmentHistory(): Treatment[]
+  }
+
+  enum Gender <<enumeration>> {
+    MALE
+    FEMALE
+    OTHER
+  }
+
+  enum PatientStatus <<enumeration>> {
+    INPATIENT
+    DISCHARGED
+    WAITING
+  }
+}
+
+class Doctor {
+  - doctorID: String
+  - name: String
+  - grade: String
+  - specialty: String
+  - team: String
+  - pagerBleep: String
+  - email: String
+  - onCallToday: boolean
+  + setOnCall(onCall: boolean): void
+  + getPrimaryWard(): Ward
+  + assignAsLeadConsultant(w: Ward): void
+  + prescribeTreatment(p: Patient, desc: String): Treatment
+}
+
+class Admission {
+  - admissionID: String
+  - admissionDate: Date
+  - dischargeDate: Date
+  + calculateLengthOfStay(): int
+  + discharge(): void
+}
+
+class Treatment {
+  - treatmentID: String
+  - description: String
+  - date: Date
+  + recordTreatment(): void
+}
+
+class User {
+  - username: String
+  - password: String
+  - role: String
+  + login(): boolean
+  + logout(): void
+}
+
+' ===== Enum Usage Links (dashed) =====
+Ward ..> WardType
+Bed ..> BedStatus
+Patient ..> Gender
+Patient ..> PatientStatus
+
+' ===== Relationships =====
+Ward "1" -- "1..*" Bed : contains
+Bed "0..1" -- "0..1" Patient : occupied by
+Patient "1" -- "0..*" Admission : has
+Admission "0..1" -- "1" Ward : admitted to
+Admission "0..1" -- "1" Bed : assigned to
+Doctor "0..*" -- "1" Ward : lead consultant
+Doctor "1" -- "0..*" Treatment : prescribes
+Patient "1" -- "0..*" Treatment : receives
+
+@enduml
