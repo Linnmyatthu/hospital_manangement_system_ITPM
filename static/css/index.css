@@ -473,7 +473,7 @@ body {
 
 /* MOBILE MENU BUTTON (HAMBURGER) */
 .menu-toggle {
-  display: none; /* hidden on desktop */
+  display: none;
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -512,7 +512,7 @@ body {
     transition: transform 0.25s ease, opacity 0.2s ease;
   }
 
-  .sidebar.sidebar-open {  /* CORRECTED: target sidebar with sidebar-open class */
+  .sidebar.sidebar-open {  
     transform: translateX(0);
     opacity: 1;
   }
@@ -522,7 +522,7 @@ body {
   }
 
   .menu-toggle {
-    display: inline-flex; /* show hamburger */
+    display: inline-flex; 
   }
 
   .top-bar {
@@ -550,7 +550,6 @@ body {
   }
 }
 
-/* Optional: Add desktop style to ensure sidebar is visible */
 @media (min-width: 961px) {
   .sidebar {
     transform: none;

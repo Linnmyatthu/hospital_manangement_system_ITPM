@@ -1,3 +1,4 @@
+// Patient management functions
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('searchInput');
   if (searchInput) {
@@ -5,13 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Global functions used by onclick handlers
 function openTransferModal(button) {
-  // Reset form first to clear any previous data
   document.getElementById('transferForm').reset();
   document.getElementById('wardGenderError').style.display = 'none';
 
-  // Then populate with the new patient's data
   const patientId = button.getAttribute('data-patient-id');
   const patientName = button.getAttribute('data-patient-name');
   const patientGender = button.getAttribute('data-patient-gender');
@@ -22,7 +20,6 @@ function openTransferModal(button) {
   document.getElementById('transferPatientGender').value = patientGender;
   document.getElementById('currentWard').value = currentWard;
 
-  // Show modal
   document.getElementById('transferModal').classList.add('open');
 }
 
@@ -38,7 +35,6 @@ function submitTransfer(event) {
   const wardGender = selectedOption.getAttribute('data-gender');
   const patientGender = document.getElementById('transferPatientGender').value;
 
-  // Gender validation
   if (wardGender !== 'Mixed' && wardGender !== patientGender) {
     const errorMsg = document.getElementById('wardGenderError');
     errorMsg.style.display = 'block';
@@ -46,13 +42,11 @@ function submitTransfer(event) {
     return false;
   }
 
-  // Collect data
   const formData = new FormData();
   formData.append('patient_id', document.getElementById('transferPatientId').value);
   formData.append('new_ward_id', newWardSelect.value);
   formData.append('reason', document.getElementById('transferReason').value);
 
-  // Send to Flask endpoint
   fetch(`/api/patients/${formData.get('patient_id')}/transfer`, {
     method: 'POST',
     body: formData
@@ -69,7 +63,6 @@ function submitTransfer(event) {
     window.location.reload();
   })
   .catch(error => {
-    console.error('Error:', error);
     alert('❌ Transfer failed. Please try again.');
   });
 
@@ -111,7 +104,6 @@ function dischargePatient(id, name) {
         window.location.reload();
       })
       .catch(error => {
-        console.error('Error:', error);
         alert('❌ Discharge failed. Please try again.');
       });
   }

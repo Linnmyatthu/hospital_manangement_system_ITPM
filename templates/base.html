@@ -5,15 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Hospital Management System{% endblock %}</title>
-
-    <!-- Base styles - linked from external file -->
     <link rel="stylesheet" href="/static/css/base.css">
     {% block extra_css %}{% endblock %}
 </head>
 
 <body>
     <div class="app-shell">
-        <!-- SIDEBAR -->
         <aside class="sidebar" id="sidebar">
             <div class="logo">
                 <span class="logo-mark">🏥</span>
@@ -59,13 +56,10 @@
             </div>
         </aside>
 
-        <!-- MAIN AREA -->
         <main class="main-area">
-            <!-- TOP BAR -->
             <header class="top-bar">
                 <div class="top-left">
                     <div class="top-left-row">
-                        <!-- mobile menu button -->
                         <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
                             <span></span>
                             <span></span>
@@ -107,10 +101,8 @@
                 </div>
             </header>
 
-            <!-- MAIN CONTENT -->
             {% block content %}{% endblock %}
 
-            <!-- FOOTER -->
             <footer class="site-footer">
                 <div class="footer-column">
                     <h4>MyHospital</h4>
@@ -162,7 +154,6 @@
         </main>
     </div>
 
-    <!-- Scripts -->
     <script src="/static/js/theme.js"></script>
     <script src="/static/js/base.js"></script>
     {% block extra_js %}{% endblock %}

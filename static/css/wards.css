@@ -295,7 +295,7 @@ body {
   background: var(--bg-feature);
 }
 
-/* ACTION BUTTONS SECTION - Below summary cards */
+/* ACTION BUTTONS SECTION */
 .action-buttons-section {
   margin: 1rem 0 2rem 0;
 }
@@ -731,8 +731,7 @@ body {
   .app-shell { 
     grid-template-columns: 1fr; 
   }
-  
-  /* Sidebar becomes an overlay */
+
   .sidebar { 
     display: flex !important;
     position: fixed;

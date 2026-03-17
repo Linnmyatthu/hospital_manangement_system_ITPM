@@ -8,7 +8,6 @@
 {% block page_subtitle %}Monitor wards, teams, and patients in real time.{% endblock %}
 
 {% block content %}
-<!-- CARD ROW (TOP) - Dynamic data from Flask -->
 <section class="card-row">
   <article class="stat-card">
     <div class="stat-header">
@@ -43,11 +42,10 @@
       <span class="stat-pill">{{ stats.doctors_on_duty if stats else 84 }} on duty</span>
     </div>
     <p>Track staffing levels and on-call coverage across wards.</p>
-    <a href="/teams" class="card-cta">View doctors</a>
+    <a href="/manage-doctors" class="card-cta">View doctors</a>
   </article>
 </section>
 
-<!-- HERO WITH IMAGE BESIDE TEXT -->
 <section class="hero">
   <div class="hero-inner">
     <div class="hero-content">
@@ -69,7 +67,6 @@
   </div>
 </section>
 
-<!-- FEATURE STRIP (BOTTOM PANEL) -->
 <section class="feature-strip">
   <article class="feature">
     <h3>Patient tracking</h3>

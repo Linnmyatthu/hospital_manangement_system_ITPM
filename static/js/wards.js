@@ -1,65 +1,36 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Wards.js loaded - page specific functionality only');
-    
-    // Search functionality
     const searchInput = document.getElementById('wardSearch');
     const statusFilter = document.getElementById('wardStatusFilter');
     const table = document.getElementById('wardsTable');
     const rows = table ? table.querySelectorAll('tbody tr') : [];
     const noResults = document.getElementById('noResultsMessage');
 
-    console.log('Found', rows.length, 'rows for search');
-
-    // Simplified function to get cell text
     function getCellText(cell) {
         if (!cell) return '';
-        
-        // Get the raw text content
         let text = cell.textContent.trim();
-        
-        // If it contains a colon, take the part after the last colon
-        // This handles both "Ward name: Cardiology" and just "Cardiology"
         if (text.includes(':')) {
-            const parts = text.split(':');
-            text = parts[parts.length - 1].trim();
+            text = text.split(':')[text.split(':').length - 1].trim();
         }
-        
         return text;
     }
 
-    // Filter table function
     function filterTable() {
-        if (!searchInput || !statusFilter) {
-            console.log('Missing search input or status filter');
-            return;
-        }
+        if (!searchInput || !statusFilter) return;
         
         const searchTerm = searchInput.value.toLowerCase().trim();
         const statusValue = statusFilter.value.toLowerCase();
         
-        console.log('Searching for:', searchTerm ? `"${searchTerm}"` : 'empty', 'Status:', statusValue);
-        
         let visibleCount = 0;
 
-        rows.forEach((row, index) => {
-            // Skip rows with colspan (like "no wards found" row)
-            if (row.cells.length < 8 || row.querySelector('td[colspan]')) {
-                return;
-            }
+        rows.forEach((row) => {
+            if (row.cells.length < 8 || row.querySelector('td[colspan]')) return;
             
-            // Get ward name (first cell)
             let wardName = '';
-            if (row.cells[0]) {
-                wardName = getCellText(row.cells[0]).toLowerCase();
-            }
+            if (row.cells[0]) wardName = getCellText(row.cells[0]).toLowerCase();
             
-            // Get ward type (third cell)
             let wardType = '';
-            if (row.cells[2]) {
-                wardType = getCellText(row.cells[2]).toLowerCase();
-            }
+            if (row.cells[2]) wardType = getCellText(row.cells[2]).toLowerCase();
             
-            // Get status (seventh cell)
             let status = '';
             if (row.cells[6]) {
                 const statusBadge = row.cells[6].querySelector('.badge');
@@ -70,59 +41,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
-            // Debug first few rows (only when searching)
-            if (index < 3 && searchTerm) {
-                console.log(`Row ${index}:`, {
-                    name: wardName,
-                    type: wardType,
-                    status: status
-                });
-            }
-            
-            // Check if search term matches name OR type
-            const matchesSearch = searchTerm === '' || 
-                                 wardName.includes(searchTerm) || 
-                                 wardType.includes(searchTerm);
-            
-            // Check if status matches filter
+            const matchesSearch = searchTerm === '' || wardName.includes(searchTerm) || wardType.includes(searchTerm);
             const matchesStatus = statusValue === 'all' || status.includes(statusValue);
             
-            // Show/hide row
-            if (matchesSearch && matchesStatus) {
-                row.style.display = '';
-                visibleCount++;
-            } else {
-                row.style.display = 'none';
-            }
+            row.style.display = matchesSearch && matchesStatus ? '' : 'none';
+            if (matchesSearch && matchesStatus) visibleCount++;
         });
-
-        console.log('Visible rows:', visibleCount);
         
-        // Show/hide no results message
         if (noResults) {
             noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-            if (visibleCount === 0 && searchTerm) {
-                console.log('No results found for:', searchTerm);
-            }
         }
     }
 
-    // Add event listeners for search
-    if (searchInput) {
-        searchInput.addEventListener('input', filterTable);
-        console.log('Search listener added');
-    }
-    
-    if (statusFilter) {
-        statusFilter.addEventListener('change', filterTable);
-        console.log('Status filter listener added');
-    }
+    if (searchInput) searchInput.addEventListener('input', filterTable);
+    if (statusFilter) statusFilter.addEventListener('change', filterTable);
 
-    // Initial filter
     filterTable();
 });
 
-// Modal Functions
 function openAddWardModal() {
     const modal = document.getElementById('addWardModal');
     if (modal) modal.style.display = 'block';
@@ -144,8 +80,6 @@ function closeDeleteModal() {
 }
 
 function editWard(button) {
-    console.log('Edit button clicked');
-    
     const wardId = button.getAttribute('data-ward-id');
     const wardName = button.getAttribute('data-ward-name');
     const wardCode = button.getAttribute('data-ward-code');
@@ -178,8 +112,6 @@ function editWard(button) {
 }
 
 function deleteWard(button) {
-    console.log('Delete button clicked');
-    
     const wardId = button.getAttribute('data-ward-id');
     const wardName = button.getAttribute('data-ward-name');
     

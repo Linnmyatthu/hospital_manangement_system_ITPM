@@ -1,4 +1,3 @@
-// theme.js – shared light/dark mode across all pages
 const THEME_KEY = 'myhospital-theme';
 
 function applyStoredTheme() {

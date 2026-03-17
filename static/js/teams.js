@@ -1,12 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Teams.js loaded - teams specific functionality only');
-  
   const searchInput = document.getElementById('teamSearch');
   const teamFilter = document.getElementById('teamFilter');
   const table = document.getElementById('teamsTable');
   const noResults = document.getElementById('teamsNoResults');
 
-  // Filter by name / grade / specialty and team
   function applyFilter() {
     if (!table) return;
 
@@ -41,15 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Add event listeners
   if (searchInput) searchInput.addEventListener('input', applyFilter);
   if (teamFilter) teamFilter.addEventListener('change', applyFilter);
-  
-  // Initial filter
+
   applyFilter();
 });
 
-// Modal functions for teams page
 function openAddTeamModal() {
   const modal = document.getElementById('addTeamModal');
   if (modal) modal.style.display = 'block';

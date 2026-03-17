@@ -16,7 +16,6 @@
 {% endblock %}
 
 {% block content %}
-<!-- ACTION BUTTONS SECTION (BELOW SUMMARY CARDS) -->
 <section class="action-buttons-section">
   <div class="action-buttons-container">
     <a href="/ward" class="primary-btn">View Ward Details</a>
@@ -24,7 +23,6 @@
   </div>
 </section>
 
-<!-- SUMMARY CARDS -->
 <section class="summary-row">
   <article class="summary-card">
     <h2>Total wards</h2>
@@ -45,8 +43,6 @@
   </article>
 </section>
 
-
-<!-- TABLE CARD -->
 <section class="table-card">
   <div class="table-card-header">
     <div>
@@ -115,7 +111,7 @@
             <button onclick="editWard(this)" data-ward-id="{{ ward.id }}" data-ward-name="{{ ward.name }}"
               data-ward-code="{{ ward.code }}" data-ward-type="{{ ward.type }}" data-ward-capacity="{{ ward.capacity }}"
               data-ward-occupied="{{ ward.occupied }}" data-ward-consultant="{{ ward.lead_consultant or '' }}"
-              class="btn-action btn-edit" title="Edit">✏️</button>
+              data-ward-gender="{{ ward.gender_type }}" class="btn-action btn-edit" title="Edit">✏️</button>
             <button onclick="deleteWard(this)" data-ward-id="{{ ward.id }}" data-ward-name="{{ ward.name }}"
               class="btn-action btn-delete" title="Delete">🗑️</button>
           </td>
@@ -136,7 +132,6 @@
   </div>
 </section>
 
-<!-- Add Ward Modal -->
 <div id="addWardModal" class="modal" style="display: none;">
   <div class="modal-overlay" onclick="closeAddWardModal()"></div>
   <div class="modal-dialog">
@@ -177,6 +172,15 @@
             </select>
           </div>
 
+          <div class="form-group">
+            <label>Gender Type <span class="required">*</span></label>
+            <select name="gender_type" class="form-input" required>
+              <option value="Mixed">Mixed</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+
           <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
               <label>Total Beds <span class="required">*</span></label>
@@ -204,7 +208,6 @@
   </div>
 </div>
 
-<!-- Edit Ward Modal -->
 <div id="editWardModal" class="modal" style="display: none;">
   <div class="modal-overlay" onclick="closeEditWardModal()"></div>
   <div class="modal-dialog">
@@ -246,6 +249,15 @@
             </select>
           </div>
 
+          <div class="form-group">
+            <label>Gender Type <span class="required">*</span></label>
+            <select name="gender_type" id="edit_gender_type" class="form-input" required>
+              <option value="Mixed">Mixed</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+
           <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
               <label>Total Beds <span class="required">*</span></label>
@@ -273,7 +285,6 @@
   </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
 <div id="deleteWardModal" class="modal" style="display: none;">
   <div class="modal-overlay" onclick="closeDeleteModal()"></div>
   <div class="modal-dialog" style="max-width: 400px;">

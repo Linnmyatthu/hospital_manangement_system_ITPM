@@ -514,7 +514,6 @@ body {
     grid-template-columns: 1fr; 
   }
   
-  /* Sidebar becomes overlay */
   .sidebar { 
     position: fixed;
     left: 0;

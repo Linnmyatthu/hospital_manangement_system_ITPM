@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const table = document.getElementById('teamPatientsTable');
   const noResults = document.getElementById('patientsNoResults');
 
-  // filter patients by name, age, ward, diagnosis and status
   function applyFilter() {
     if (!table) return;
 

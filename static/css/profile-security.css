@@ -1,5 +1,3 @@
-/* profile-security.css - only profile & security specific styles */
-
 /* CONTENT GRID */
 .content-grid {
   display: grid;
@@ -188,7 +186,7 @@ input:checked + .slider:before {
   background: var(--accent);
 }
 
-/* RESPONSIVE - only page-specific */
+/* RESPONSIVE */
 @media (max-width: 960px) {
   .content-grid {
     grid-template-columns: 1fr;

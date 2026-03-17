@@ -1,9 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Reports.js loaded - page specific functionality only');
-  
   const reportPeriod = document.getElementById('reportPeriod');
 
-  // data for different periods
   const periodData = {
     today: {
       admissions: { value: '42', change: '+5% vs yesterday', trend: 'positive' },
@@ -63,11 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // update metrics cards
   function updateMetrics(period) {
     const data = periodData[period];
 
-    // update metric values
     const metricCards = document.querySelectorAll('.metric-card');
     if (metricCards[0]) {
       metricCards[0].querySelector('.metric-value').textContent = data.admissions.value;
@@ -97,25 +92,22 @@ document.addEventListener('DOMContentLoaded', () => {
       change4.className = 'metric-change ' + data.occupancy.trend;
     }
 
-    // update ward occupancy bars
     updateWardOccupancy(data.wardOccupancy);
   }
 
-  // update ward occupancy chart
   function updateWardOccupancy(occupancy) {
     const barItems = document.querySelectorAll('.bar-item');
-    
+
     barItems.forEach(item => {
       const label = item.querySelector('.bar-label').textContent;
       const fill = item.querySelector('.bar-fill');
       const value = item.querySelector('.bar-value');
-      
+
       if (occupancy[label]) {
         const percent = occupancy[label];
         fill.style.width = percent + '%';
         value.textContent = percent + '%';
-        
-        // update color based on value
+
         fill.className = 'bar-fill';
         if (percent >= 90) {
           fill.classList.add('critical');
@@ -128,15 +120,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // period change handler
   if (reportPeriod) {
     reportPeriod.addEventListener('change', () => {
       const period = reportPeriod.value;
       updateMetrics(period);
-      console.log('Report period changed to:', period);
     });
 
-    // Initial load - set default period
     updateMetrics(reportPeriod.value);
   }
 });

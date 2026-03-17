@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const securityForm = document.getElementById('securityForm');
   const securityAlert = document.getElementById('securitySavedAlert');
 
-  // fake save handlers
   if (profileForm && profileAlert) {
     profileForm.addEventListener('submit', (e) => {
       e.preventDefault();

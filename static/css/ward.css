@@ -323,8 +323,21 @@ body {
   border-collapse: collapse;
 }
 
+.ward-table thead,
+.ward-table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.ward-table tbody {
+  display: block;
+  max-height: 300px;  
+  overflow-y: auto;
+}
+
 .ward-table thead {
-  background: var(--bg-feature);
+  width: calc(100% - 1em); 
 }
 
 .ward-table thead th {
@@ -722,6 +735,19 @@ textarea.form-input {
   height: 2px;
   background: var(--text-main);
   border-radius: 999px;
+}
+
+/* Force sidebar visible on desktop (override any hiding classes) */
+@media (min-width: 961px) {
+  .sidebar {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    position: relative !important;
+  }
+  .sidebar-closed {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+  }
 }
 
 /* RESPONSIVE */

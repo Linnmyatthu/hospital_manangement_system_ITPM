@@ -10,38 +10,46 @@ document.addEventListener('DOMContentLoaded', () => {
   const wardGenderError = document.getElementById('wardGenderError');
   const wardGenderInfo = document.getElementById('wardGenderInfo');
 
-  /* MOBILE SIDEBAR TOGGLE */
   if (menuToggle && sidebar) {
     menuToggle.addEventListener('click', () => {
       sidebar.classList.toggle('sidebar-open');
       sidebar.classList.toggle('sidebar-closed');
     });
 
-    document.addEventListener('click', (e) => {
+    function handleOutsideClick(e) {
+      const isMobile = window.innerWidth <= 768;
+      if (!isMobile) return;
+
       if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
         sidebar.classList.remove('sidebar-open');
         sidebar.classList.add('sidebar-closed');
       }
+    }
+
+    document.addEventListener('click', handleOutsideClick);
+
+    window.addEventListener('resize', () => {
+      const isMobile = window.innerWidth <= 768;
+      if (!isMobile && sidebar.classList.contains('sidebar-open')) {
+      }
     });
   }
 
-  /* AUTO-CALCULATE AGE FROM DOB */
   if (dobInput && ageInput) {
     dobInput.addEventListener('change', () => {
       const dob = new Date(dobInput.value);
       const today = new Date();
       let age = today.getFullYear() - dob.getFullYear();
       const monthDiff = today.getMonth() - dob.getMonth();
-      
+
       if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
         age--;
       }
-      
+
       ageInput.value = age >= 0 ? age : '';
     });
   }
 
-  /* SET DEFAULT ADMISSION DATE TO NOW */
   const admissionDateInput = document.getElementById('admissionDate');
   if (admissionDateInput) {
     const now = new Date();
@@ -53,18 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
     admissionDateInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 
-  /* WARD GENDER VALIDATION */
   function validateWardGender() {
     const patientSex = sexSelect.value;
     const selectedWard = wardSelect.options[wardSelect.selectedIndex];
     const wardGender = selectedWard ? selectedWard.getAttribute('data-gender') : null;
 
-    // Hide all messages initially
     wardGenderError.classList.remove('show');
     wardGenderInfo.classList.remove('show');
     wardSelect.classList.remove('invalid', 'valid');
 
-    // If no sex selected, show info message
     if (!patientSex) {
       if (wardSelect.value) {
         wardGenderInfo.classList.add('show');
@@ -72,39 +77,25 @@ document.addEventListener('DOMContentLoaded', () => {
       return false;
     }
 
-    // If no ward selected, don't validate yet
     if (!wardSelect.value) {
       return true;
     }
 
-    // Check gender compatibility
     if (wardGender === 'Mixed') {
       wardSelect.classList.add('valid');
       return true;
     }
 
-    // Convert sex value to full gender
-    let patientGender;
-    if (patientSex === 'M') {
-      patientGender = 'Male';
-    } else if (patientSex === 'F') {
-      patientGender = 'Female';
-    } else {
-      // For "Other", only mixed wards are allowed
-      if (wardGender !== 'Mixed') {
-        wardGenderError.textContent = `⚠️ This ward only accepts ${wardGender} patients. Please select a Mixed ward for patients with "Other" sex.`;
-        wardGenderError.classList.add('show');
-        wardSelect.classList.add('invalid');
-        return false;
-      }
-      wardSelect.classList.add('valid');
-      return true;
+    if (patientSex === 'Other') {
+      wardGenderError.textContent = `⚠️ This ward only accepts ${wardGender} patients. Please select a Mixed ward for patients with "Other" sex.`;
+      wardGenderError.classList.add('show');
+      wardSelect.classList.add('invalid');
+      return false;
     }
 
-    // Validate gender match
-    if (wardGender !== patientGender) {
+    if (wardGender !== patientSex) {
       const wardName = selectedWard.text.split(' - ')[0];
-      wardGenderError.textContent = `⚠️ Gender mismatch! ${wardName} is for ${wardGender} patients only. Patient sex is ${patientGender}.`;
+      wardGenderError.textContent = `⚠️ Gender mismatch! ${wardName} is for ${wardGender} patients only. Patient sex is ${patientSex}.`;
       wardGenderError.classList.add('show');
       wardSelect.classList.add('invalid');
       return false;
@@ -114,26 +105,22 @@ document.addEventListener('DOMContentLoaded', () => {
     return true;
   }
 
-  // Validate when sex changes
   if (sexSelect) {
     sexSelect.addEventListener('change', () => {
       validateWardGender();
     });
   }
 
-  // Validate when ward changes
   if (wardSelect) {
     wardSelect.addEventListener('change', () => {
       validateWardGender();
     });
   }
 
-  /* FORM SUBMISSION – REAL FETCH TO BACKEND */
   if (submitBtn) {
     submitBtn.addEventListener('click', (e) => {
       e.preventDefault();
 
-      // ---- Validation (unchanged) ----
       const firstName = document.getElementById('firstName').value.trim();
       const lastName = document.getElementById('lastName').value.trim();
       const dob = document.getElementById('dob').value;
@@ -202,13 +189,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Optional fields
       const phone = document.getElementById('phone').value.trim();
       const address = document.getElementById('address').value.trim();
       const notes = document.getElementById('notes').value.trim();
       const age = document.getElementById('age').value;
 
-      // Prepare data – only what the backend expects
       const patientData = {
         firstName,
         lastName,
@@ -219,18 +204,16 @@ document.addEventListener('DOMContentLoaded', () => {
         phone,
         address,
         admissionDate,
-        ward,          // Ward ID (or code, depending on your backend)
+        ward,
         bed,
-        consultant,    // Doctor ID (or code)
+        consultant,
         diagnosis,
         notes
       };
 
-      // Disable button while submitting
       submitBtn.disabled = true;
       submitBtn.textContent = 'Saving...';
 
-      // Send to Flask
       fetch('/patients/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -243,29 +226,22 @@ document.addEventListener('DOMContentLoaded', () => {
         return response.json();
       })
       .then(data => {
-        console.log('Patient saved:', data);
-
-        // Show success message
         if (successAlert) {
           successAlert.style.display = 'flex';
         }
 
-        // Redirect after a short delay
         setTimeout(() => {
           window.location.href = '/patients';
         }, 1500);
       })
       .catch(error => {
-        console.error('Error saving patient:', error);
         alert('❌ Failed to add patient: ' + error.message);
-        // Re-enable button
         submitBtn.disabled = false;
         submitBtn.textContent = 'Add patient';
       });
     });
   }
 
-  /* LIGHT/DARK MODE TOGGLE */
   const lightModeToggle = document.getElementById('lightModeToggle');
   if (lightModeToggle) {
     lightModeToggle.addEventListener('click', () => {
@@ -282,7 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* NHS NUMBER FORMATTING */
   const nhsNumberInput = document.getElementById('nhsNumber');
   if (nhsNumberInput) {
     nhsNumberInput.addEventListener('input', (e) => {
@@ -296,7 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* PHONE NUMBER FORMATTING */
   const phoneInput = document.getElementById('phone');
   if (phoneInput) {
     phoneInput.addEventListener('input', (e) => {
@@ -308,10 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* SHOW INFO MESSAGE ON PAGE LOAD */
   if (!sexSelect.value && wardGenderInfo) {
     wardGenderInfo.classList.add('show');
   }
-
-  console.log('Add Patient form initialized successfully');
 });
