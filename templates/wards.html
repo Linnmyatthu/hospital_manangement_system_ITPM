@@ -16,28 +16,27 @@
 {% endblock %}
 
 {% block content %}
-<!-- ACTION BUTTONS SECTION (BELOW SUMMARY CARDS) -->
 <section class="action-buttons-section">
   <div class="action-buttons-container">
     <a href="/ward" class="primary-btn">View Ward Details</a>
+    {% if user_role == 'admin' %}
     <a href="#add-ward-modal" class="primary-btn" onclick="openAddWardModal()">+ Add New Ward</a>
+    <button id="exportWardsBtn" class="primary-btn">📊 Export to CSV</button>
+    {% endif %}
   </div>
 </section>
 
-<!-- SUMMARY CARDS -->
 <section class="summary-row">
   <article class="summary-card">
     <h2>Total wards</h2>
     <p class="summary-value">{{ stats.total_wards if stats else 0 }}</p>
     <p class="summary-label">Medical, Surgical, ICU and more</p>
   </article>
-
   <article class="summary-card">
     <h2>Average occupancy</h2>
     <p class="summary-value">{{ stats.avg_occupancy if stats else 0 }}%</p>
     <p class="summary-label">Across all active wards</p>
   </article>
-
   <article class="summary-card">
     <h2>Critical capacity</h2>
     <p class="summary-value">{{ stats.critical_wards if stats else 0 }} wards</p>
@@ -45,21 +44,17 @@
   </article>
 </section>
 
-
-<!-- TABLE CARD -->
 <section class="table-card">
   <div class="table-card-header">
     <div>
       <h2>Ward list</h2>
       <p>Search by ward name or type to find the right unit quickly.</p>
     </div>
-
     <div class="table-actions">
       <div class="search-wrapper">
         <span class="search-icon">🔍</span>
         <input type="text" id="wardSearch" placeholder="Search by name or type..." autocomplete="off" />
       </div>
-
       <select id="wardStatusFilter" class="status-filter">
         <option value="all">All statuses</option>
         <option value="Open">Open</option>
@@ -95,9 +90,7 @@
           <td data-label="Occupancy">
             {% if ward.capacity > 0 %}
             {{ (ward.occupied / ward.capacity * 100) | int }}%
-            {% else %}
-            0%
-            {% endif %}
+            {% else %}0%{% endif %}
           </td>
           <td data-label="Status">
             {% set occupancy_percent = (ward.occupied / ward.capacity * 100) if ward.capacity > 0 else 0 %}
@@ -112,12 +105,14 @@
           <td data-label="Lead consultant">{{ ward.lead_consultant or 'Not assigned' }}</td>
           <td data-label="Actions">
             <a href="/ward/{{ ward.id }}" class="btn-action btn-view" title="View Details">👁️</a>
+            {% if user_role == 'admin' %}
             <button onclick="editWard(this)" data-ward-id="{{ ward.id }}" data-ward-name="{{ ward.name }}"
               data-ward-code="{{ ward.code }}" data-ward-type="{{ ward.type }}" data-ward-capacity="{{ ward.capacity }}"
               data-ward-occupied="{{ ward.occupied }}" data-ward-consultant="{{ ward.lead_consultant or '' }}"
-              class="btn-action btn-edit" title="Edit">✏️</button>
+              data-ward-gender="{{ ward.gender_type }}" class="btn-action btn-edit" title="Edit">✏️</button>
             <button onclick="deleteWard(this)" data-ward-id="{{ ward.id }}" data-ward-name="{{ ward.name }}"
               class="btn-action btn-delete" title="Delete">🗑️</button>
+            {% endif %}
           </td>
         </tr>
         {% else %}
@@ -129,14 +124,11 @@
         {% endfor %}
       </tbody>
     </table>
-
-    <div class="no-results" id="noResultsMessage" style="display: none;">
-      No wards match your search. Try a different name, type, or status.
-    </div>
+    <div class="no-results" id="noResultsMessage" style="display: none;">No wards match your search.</div>
   </div>
 </section>
+<br>
 
-<!-- Add Ward Modal -->
 <div id="addWardModal" class="modal" style="display: none;">
   <div class="modal-overlay" onclick="closeAddWardModal()"></div>
   <div class="modal-dialog">
@@ -145,19 +137,16 @@
         <h3 class="modal-title">Add New Ward</h3>
         <button class="modal-close" onclick="closeAddWardModal()">&times;</button>
       </div>
-
       <form action="/api/wards" method="POST" onsubmit="return validateWardForm(this)">
         <div class="modal-body">
           <div class="form-group">
             <label>Ward Name <span class="required">*</span></label>
             <input type="text" name="name" class="form-input" required placeholder="e.g., Acute Medical Unit">
           </div>
-
           <div class="form-group">
             <label>Ward Code <span class="required">*</span></label>
             <input type="text" name="code" class="form-input" required placeholder="e.g., AMU" maxlength="10">
           </div>
-
           <div class="form-group">
             <label>Ward Type <span class="required">*</span></label>
             <select name="type" class="form-input" required>
@@ -176,25 +165,29 @@
               <option value="Children">Children</option>
             </select>
           </div>
-
+          <div class="form-group">
+            <label>Gender Type <span class="required">*</span></label>
+            <select name="gender_type" class="form-input" required>
+              <option value="Mixed">Mixed</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
           <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
               <label>Total Beds <span class="required">*</span></label>
               <input type="number" name="capacity" class="form-input" required min="1" value="20">
             </div>
-
             <div class="form-group">
               <label>Currently Occupied</label>
               <input type="number" name="occupied" class="form-input" min="0" value="0">
             </div>
           </div>
-
           <div class="form-group">
             <label>Lead Consultant</label>
             <input type="text" name="lead_consultant" class="form-input" placeholder="e.g., Dr. Riley Morgan">
           </div>
         </div>
-
         <div class="modal-footer">
           <button type="button" class="btn-secondary" onclick="closeAddWardModal()">Cancel</button>
           <button type="submit" class="btn-primary">Add Ward</button>
@@ -204,7 +197,6 @@
   </div>
 </div>
 
-<!-- Edit Ward Modal -->
 <div id="editWardModal" class="modal" style="display: none;">
   <div class="modal-overlay" onclick="closeEditWardModal()"></div>
   <div class="modal-dialog">
@@ -213,21 +205,17 @@
         <h3 class="modal-title">Edit Ward</h3>
         <button class="modal-close" onclick="closeEditWardModal()">&times;</button>
       </div>
-
       <form id="editWardForm" method="POST" onsubmit="return validateWardForm(this)">
         <div class="modal-body">
           <input type="hidden" name="ward_id" id="edit_ward_id">
-
           <div class="form-group">
             <label>Ward Name <span class="required">*</span></label>
             <input type="text" name="name" id="edit_name" class="form-input" required>
           </div>
-
           <div class="form-group">
             <label>Ward Code <span class="required">*</span></label>
             <input type="text" name="code" id="edit_code" class="form-input" required maxlength="10">
           </div>
-
           <div class="form-group">
             <label>Ward Type <span class="required">*</span></label>
             <select name="type" id="edit_type" class="form-input" required>
@@ -245,25 +233,29 @@
               <option value="Children">Children</option>
             </select>
           </div>
-
+          <div class="form-group">
+            <label>Gender Type <span class="required">*</span></label>
+            <select name="gender_type" id="edit_gender_type" class="form-input" required>
+              <option value="Mixed">Mixed</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
           <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="form-group">
               <label>Total Beds <span class="required">*</span></label>
               <input type="number" name="capacity" id="edit_capacity" class="form-input" required min="1">
             </div>
-
             <div class="form-group">
               <label>Currently Occupied</label>
               <input type="number" name="occupied" id="edit_occupied" class="form-input" min="0">
             </div>
           </div>
-
           <div class="form-group">
             <label>Lead Consultant</label>
             <input type="text" name="lead_consultant" id="edit_lead_consultant" class="form-input">
           </div>
         </div>
-
         <div class="modal-footer">
           <button type="button" class="btn-secondary" onclick="closeEditWardModal()">Cancel</button>
           <button type="submit" class="btn-primary">Update Ward</button>
@@ -273,7 +265,6 @@
   </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
 <div id="deleteWardModal" class="modal" style="display: none;">
   <div class="modal-overlay" onclick="closeDeleteModal()"></div>
   <div class="modal-dialog" style="max-width: 400px;">
@@ -282,12 +273,10 @@
         <h3 class="modal-title">Confirm Delete</h3>
         <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
       </div>
-
       <div class="modal-body">
         <p>Are you sure you want to delete <strong id="deleteWardName"></strong>?</p>
         <p style="color: var(--text-muted); font-size: 0.9rem;">This action cannot be undone.</p>
       </div>
-
       <div class="modal-footer">
         <button type="button" class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
         <form id="deleteWardForm" method="POST" style="display: inline;">
@@ -301,4 +290,23 @@
 
 {% block extra_js %}
 <script src="/static/js/wards.js"></script>
+<script>
+  document.getElementById('exportWardsBtn')?.addEventListener('click', function () {
+    const rows = [];
+    const headers = Array.from(document.querySelectorAll('#wardsTable thead th')).map(th => th.innerText.trim());
+    rows.push(headers);
+    document.querySelectorAll('#wardsTable tbody tr').forEach(tr => {
+      const cells = Array.from(tr.querySelectorAll('td'));
+      const row = cells.slice(0, -1).map(td => td.innerText.trim());
+      rows.push(row);
+    });
+    const csv = rows.map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'wards_export.csv';
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+</script>
 {% endblock %}

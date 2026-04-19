@@ -14,38 +14,21 @@
 
 {% block content %}
 <section class="content-grid">
-  <!-- PROFILE CARD -->
   <section class="card profile-card">
-    <div class="avatar-circle">DR</div>
-    <h2 class="profile-name">Dr. Riley Morgan</h2>
-    <p class="profile-role">Consultant – Acute Medicine</p>
+    <h2 class="card-title">Account Info</h2>
+    <p class="card-text">Your login email and assigned role.</p>
 
-    <form class="profile-form" id="profileForm">
-      <div class="form-row">
-        <label for="fullName">Full name</label>
-        <input type="text" id="fullName" value="Dr. Riley Morgan">
-      </div>
+    <div class="form-row">
+      <label>Email address</label>
+      <input type="email" value="{{ email }}" readonly>
+    </div>
 
-      <div class="form-row">
-        <label for="email">Work email</label>
-        <input type="email" id="email" value="riley.morgan@myhospital.nhs.uk">
-      </div>
-
-      <div class="form-row">
-        <label for="team">Primary team</label>
-        <input type="text" id="team" value="Acute Medical Unit">
-      </div>
-
-      <button type="submit" class="primary-btn">Save profile</button>
-
-      <div class="inline-alert" id="profileSavedAlert">
-        <span class="inline-alert-dot"></span>
-        <span>Profile updated successfully.</span>
-      </div>
-    </form>
+    <div class="form-row">
+      <label>Role</label>
+      <input type="text" value="{{ role.replace('_', ' ') | title }}" readonly>
+    </div>
   </section>
 
-  <!-- SECURITY SETTINGS -->
   <section class="card">
     <h2 class="card-title">Security</h2>
     <p class="card-text">Manage your password and extra sign‑in protection.</p>
@@ -53,7 +36,10 @@
     <form class="security-form" id="securityForm">
       <div class="form-row">
         <label for="currentPassword">Current password</label>
-        <input type="password" id="currentPassword" placeholder="••••••••">
+        <div class="password-reveal-wrap">
+          <input type="password" id="currentPassword" placeholder="••••••••">
+          <button type="button" class="reveal-btn" id="revealCurrentBtn">Show</button>
+        </div>
       </div>
 
       <div class="form-row">
@@ -84,10 +70,21 @@
         <span>Security settings saved.</span>
       </div>
     </form>
+
+    <!-- Logout button -->
+    <div class="logout-section">
+      <hr class="logout-divider">
+      <button type="button" id="logoutBtn" class="secondary-btn logout-btn">Log out</button>
+    </div>
   </section>
 </section>
 {% endblock %}
 
 {% block extra_js %}
 <script src="/static/js/profile-security.js"></script>
+<script>
+  document.getElementById('logoutBtn').addEventListener('click', function () {
+    window.location.href = '/logout';
+  });
+</script>
 {% endblock %}

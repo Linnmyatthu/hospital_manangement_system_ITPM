@@ -1,6 +1,6 @@
 @startuml
 !theme plain
-top to bottom direction
+left to right direction
 skinparam linetype ortho
 skinparam dpi 300
 skinparam classAttributeIconSize 0
@@ -11,15 +11,15 @@ skinparam class {
   FontSize 14
   AttributeFontSize 12
   Padding 10
-  MinWidth 180
+  MinWidth 200
 }
 skinparam arrow {
   Color Black
   Thickness 2
   FontSize 12
 }
-skinparam nodesep 40
-skinparam ranksep 50
+skinparam nodesep 60
+skinparam ranksep 80
 
 ' ===== Core Entities =====
 
@@ -34,10 +34,9 @@ class Ward {
   + status: String
   + gender_type: String
   + created_at: Timestamp
-  --
-  + admitPatient(p, bed)
-  + dischargePatient(p)
   + getOccupancy(): float
+  + admitPatient(p: Patient): void
+  + dischargePatient(p: Patient): void
 }
 
 class Team {
@@ -60,9 +59,8 @@ class Doctor {
   + pager: String
   + email: String
   + created_at: Timestamp
-  --
-  + setOnCall(on)
-  + prescribeTreatment(p, desc)
+  + setOnCall(onCall: boolean): void
+  + prescribeTreatment(p: Patient, desc: String): Treatment
 }
 
 class Patient {
@@ -83,9 +81,9 @@ class Patient {
   + status: String
   + discharged_at: Timestamp
   + created_at: Timestamp
-  --
-  + transferTo(newWard, reason)
-  + discharge()
+  + admit(w: Ward, b: String): void
+  + discharge(): void
+  + transferTo(newWard: Ward, newBed: String): void
 }
 
 class Treatment {
@@ -95,8 +93,7 @@ class Treatment {
   + date: Date
   + notes: String
   + created_at: Timestamp
-  --
-  + recordTreatment()
+  + recordTreatment(): void
 }
 
 class ActivityLog {
@@ -111,13 +108,11 @@ class ActivityLog {
 class User {
   + id: int
   + username: String
-  + email: String
   + password: String
   + role: String
   + created_at: Timestamp
-  --
-  + login(email, pwd): bool
-  + logout()
+  + login(): boolean
+  + logout(): void
 }
 
 ' ===== Relationships =====
@@ -127,16 +122,18 @@ Ward "1" -- "0..*" Doctor : employs
 Team "1" -- "0..*" Doctor : has
 Doctor "1" -- "0..*" Patient : assigned as consultant
 Patient "1" -- "0..*" Treatment : receives
+Treatment "0..*" -- "1" Patient : belongs to
 
+' ActivityLog references all tables (no strict FK, shown as note)
 ActivityLog ..> Patient : logs
 ActivityLog ..> Ward : logs
 ActivityLog ..> Doctor : logs
 ActivityLog ..> Treatment : logs
 
-' ===== Constraints =====
-note right of Ward : status ∈ ['active','inactive']\ngender_type ∈ ['Mixed','Male','Female']
+' Enum-like constraints (using notes)
+note right of Ward : gender_type ∈ ['Mixed','Male','Female']\nstatus ∈ ['active','inactive']
 note right of Patient : status ∈ ['Active','Discharged','Critical']
 note right of Doctor : grade ∈ ['Consultant','ST7 Registrar',…]\non_duty ∈ {0,1}
-note right of User : role ∈ ['admin','consultant','junior']
+note right of User : role ∈ ['admin','staff','doctor']
 
 @enduml

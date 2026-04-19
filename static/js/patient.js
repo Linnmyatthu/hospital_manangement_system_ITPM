@@ -1,118 +1,109 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const searchInput = document.getElementById('searchInput');
-  if (searchInput) {
-    searchInput.addEventListener('keyup', searchPatients);
-  }
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const table = document.getElementById('patientTable');
+    const rows = table ? table.querySelectorAll('tbody tr') : [];
+    const noResults = document.getElementById('patientNoResults');
+
+    function filterTable() {
+        if (!searchInput) return;
+        const query = searchInput.value.toLowerCase().trim();
+        let visible = 0;
+        rows.forEach(row => {
+            const idCell = row.cells[0];
+            const nameCell = row.cells[1];
+            if (!idCell || !nameCell) return;
+            const idText = idCell.textContent.toLowerCase();
+            const nameText = nameCell.textContent.toLowerCase();
+            const matches = query === '' || idText.includes(query) || nameText.includes(query);
+            row.style.display = matches ? '' : 'none';
+            if (matches) visible++;
+        });
+        if (noResults) noResults.style.display = visible === 0 ? 'block' : 'none';
+    }
+
+    if (searchInput) searchInput.addEventListener('input', filterTable);
+    filterTable();
 });
 
-// Global functions used by onclick handlers
+function viewPatient(patientId) {
+    window.location.href = `/patients/${patientId}`;
+}
+
 function openTransferModal(button) {
-  // Reset form first to clear any previous data
-  document.getElementById('transferForm').reset();
-  document.getElementById('wardGenderError').style.display = 'none';
+    const patientId = button.getAttribute('data-patient-id');
+    const patientName = button.getAttribute('data-patient-name');
+    const patientGender = button.getAttribute('data-patient-gender');
+    const currentWard = button.getAttribute('data-current-ward');
 
-  // Then populate with the new patient's data
-  const patientId = button.getAttribute('data-patient-id');
-  const patientName = button.getAttribute('data-patient-name');
-  const patientGender = button.getAttribute('data-patient-gender');
-  const currentWard = button.getAttribute('data-current-ward');
+    document.getElementById('transferPatientId').value = patientId;
+    document.getElementById('transferPatientName').value = patientName;
+    document.getElementById('transferPatientGender').value = patientGender;
+    document.getElementById('currentWard').value = currentWard || 'Unknown';
+    document.getElementById('transferReason').value = '';
+    document.getElementById('wardGenderError').style.display = 'none';
 
-  document.getElementById('transferPatientId').value = patientId;
-  document.getElementById('transferPatientName').value = patientName;
-  document.getElementById('transferPatientGender').value = patientGender;
-  document.getElementById('currentWard').value = currentWard;
-
-  // Show modal
-  document.getElementById('transferModal').classList.add('open');
+    const modal = document.getElementById('transferModal');
+    if (modal) modal.style.display = 'block';
 }
 
 function closeTransferModal() {
-  document.getElementById('transferModal').classList.remove('open');
+    const modal = document.getElementById('transferModal');
+    if (modal) modal.style.display = 'none';
 }
 
-function submitTransfer(event) {
-  event.preventDefault();
+async function submitTransfer(event) {
+    event.preventDefault();
+    const patientId = document.getElementById('transferPatientId').value;
+    const newWardId = document.getElementById('newWardSelect').value;
+    const reason = document.getElementById('transferReason').value;
 
-  const newWardSelect = document.getElementById('newWardSelect');
-  const selectedOption = newWardSelect.options[newWardSelect.selectedIndex];
-  const wardGender = selectedOption.getAttribute('data-gender');
-  const patientGender = document.getElementById('transferPatientGender').value;
-
-  // Gender validation
-  if (wardGender !== 'Mixed' && wardGender !== patientGender) {
-    const errorMsg = document.getElementById('wardGenderError');
-    errorMsg.style.display = 'block';
-    errorMsg.textContent = `⚠️ Gender mismatch! ${selectedOption.text} is for ${wardGender} patients only.`;
-    return false;
-  }
-
-  // Collect data
-  const formData = new FormData();
-  formData.append('patient_id', document.getElementById('transferPatientId').value);
-  formData.append('new_ward_id', newWardSelect.value);
-  formData.append('reason', document.getElementById('transferReason').value);
-
-  // Send to Flask endpoint
-  fetch(`/api/patients/${formData.get('patient_id')}/transfer`, {
-    method: 'POST',
-    body: formData
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Transfer failed');
+    if (!newWardId) {
+        alert('Please select a new ward.');
+        return false;
     }
-    return response.json();
-  })
-  .then(data => {
-    alert('✅ Patient transferred successfully!');
-    closeTransferModal();
-    window.location.reload();
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    alert('❌ Transfer failed. Please try again.');
-  });
+    if (!reason.trim()) {
+        alert('Please provide a reason for transfer.');
+        return false;
+    }
 
-  return false;
-}
+    const formData = new FormData();
+    formData.append('new_ward_id', newWardId);
+    formData.append('reason', reason);
 
-function searchPatients() {
-  const input = document.getElementById('searchInput');
-  const filter = input.value.toUpperCase();
-  const table = document.getElementById('patientTable');
-  const tr = table.getElementsByTagName('tr');
-
-  for (let i = 1; i < tr.length; i++) {
-    let found = false;
-    const td = tr[i].getElementsByTagName('td');
-    for (let j = 0; j < td.length - 1; j++) {
-      if (td[j]) {
-        const text = td[j].textContent || td[j].innerText;
-        if (text.toUpperCase().indexOf(filter) > -1) {
-          found = true;
-          break;
+    try {
+        const response = await fetch(`/api/patients/${patientId}/transfer`, {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        if (data.success) {
+            alert('Patient transferred successfully.');
+            window.location.reload();
+        } else {
+            alert(data.error || 'Transfer failed.');
         }
-      }
+    } catch (err) {
+        alert('An error occurred. Please try again.');
     }
-    tr[i].style.display = found ? '' : 'none';
-  }
+    return false;
 }
 
-function viewPatient(id) {
-  window.location.href = `/patients/${id}`;
-}
-
-function dischargePatient(id, name) {
-  if (confirm(`⚠️ Are you sure you want to discharge ${name} (ID: ${id})?`)) {
-    fetch(`/api/patients/${id}/discharge`, { method: 'POST' })
-      .then(response => {
-        if (!response.ok) throw new Error('Discharge failed');
-        alert(`✅ Patient ${name} has been successfully discharged.`);
-        window.location.reload();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('❌ Discharge failed. Please try again.');
-      });
-  }
+async function dischargePatient(patientId, patientName) {
+    if (!confirm(`Are you sure you want to discharge ${patientName}? This action cannot be undone.`)) {
+        return;
+    }
+    try {
+        const response = await fetch(`/api/patients/${patientId}/discharge`, {
+            method: 'POST'
+        });
+        const data = await response.json();
+        if (data.success) {
+            alert('Patient discharged successfully.');
+            window.location.reload();
+        } else {
+            alert(data.error || 'Discharge failed.');
+        }
+    } catch (err) {
+        alert('An error occurred. Please try again.');
+    }
 }

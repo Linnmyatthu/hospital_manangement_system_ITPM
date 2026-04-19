@@ -1,11 +1,11 @@
-/* CONTENT GRID - specific to notifications page layout */
+/* CONTENT GRID */
 .content-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
   gap: 1.2rem;
 }
 
-/* CARD STYLES - might be reusable but keeping for now */
+/* CARD STYLES*/
 .card {
   background: var(--bg-card);
   border-radius: 18px;
@@ -25,7 +25,7 @@
   color: var(--text-muted);
 }
 
-/* SETTINGS ROWS - specific to notification settings */
+/* SETTINGS ROWS*/
 .setting-row {
   display: flex;
   justify-content: space-between;
@@ -49,7 +49,7 @@
   color: var(--text-muted);
 }
 
-/* SWITCH GROUP - toggle switch container */
+/* SWITCH GROUP */
 .switch-group {
   display: flex;
   align-items: center;
@@ -61,7 +61,7 @@
   color: var(--text-muted);
 }
 
-/* TOGGLE SWITCH - custom component */
+/* TOGGLE SWITCH  */
 .switch {
   position: relative;
   display: inline-block;
@@ -111,7 +111,7 @@ input:checked + .slider:before {
   border-radius: 34px;
 }
 
-/* FORM FIELDS - notification specific forms */
+/* FORM FIELDS*/
 .form-row {
   margin-bottom: 1rem;
   font-size: 0.9rem;
@@ -149,7 +149,7 @@ select {
   color: var(--text-muted);
 }
 
-/* BUTTON + inline alert - notification specific */
+/* BUTTON + inline alert*/
 .primary-btn {
   margin-top: 0.4rem;
   padding: 0.5rem 1.2rem;
@@ -181,7 +181,7 @@ select {
   background: var(--accent);
 }
 
-/* RESPONSIVE - only notification-specific breakpoints */
+/* RESPONSIVE*/
 @media (max-width: 960px) {
   .content-grid {
     grid-template-columns: 1fr;

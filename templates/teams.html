@@ -9,67 +9,54 @@
 {% block active_teams %}active{% endblock %}
 
 {% block page_title %}Medical teams{% endblock %}
-
-{% block page_subtitle %}
-Consultants, registrars, and junior doctors grouped by specialty team.
-{% endblock %}
+{% block page_subtitle %}Real teams, their lead consultants, and specialty.{% endblock %}
 
 {% block top_actions %}
 {{ super() }}
 {% endblock %}
 
 {% block content %}
-<!-- ACTION BUTTONS SECTION - Below page title but above summary cards -->
 <section class="action-buttons-section">
   <div class="action-buttons-container">
-    <a href="/team-patients" class="primary-btn">View team patients</a>
+    {% if user_role == 'admin' %}
     <a href="/manage-doctors" class="primary-btn">Manage Doctor</a>
+    <button id="exportTeamsBtn" class="primary-btn">📊 Export to CSV</button>
+    {% endif %}
   </div>
 </section>
 <br>
-<!-- SUMMARY CARDS -->
+
 <section class="summary-row">
   <article class="summary-card">
     <h2>Total teams</h2>
-    <p class="summary-value">8</p>
-    <p class="summary-label">Acute medicine, cardiology, surgery, and more</p>
+    <p class="summary-value">{{ teams|length }}</p>
+    <p class="summary-label">All active medical teams</p>
   </article>
 
   <article class="summary-card">
     <h2>Consultants</h2>
-    <p class="summary-value">24</p>
+    <p class="summary-value">{{ consultants_count }}</p>
     <p class="summary-label">Named responsible clinicians</p>
   </article>
 
   <article class="summary-card">
     <h2>On‑call today</h2>
-    <p class="summary-value">3 teams</p>
-    <p class="summary-label">Covering admissions and rapid response</p>
+    <p class="summary-value">{{ teams_oncall }}</p>
+    <p class="summary-label">Teams with at least one doctor on duty</p>
   </article>
 </section>
 
-<!-- TABLE CARD -->
 <section class="table-card">
   <div class="table-card-header">
     <div>
-      <h2>Team members</h2>
-      <p>Search by doctor name, grade, or specialty. Filter by team if needed.</p>
+      <h2>Team list</h2>
+      <p>Search by team name or lead consultant.</p>
     </div>
-
     <div class="table-actions">
       <div class="search-wrapper">
         <span class="search-icon">🔍</span>
-        <input type="text" id="teamSearch" placeholder="Search by name, grade or specialty..." autocomplete="off" />
+        <input type="text" id="teamSearch" placeholder="Search by team or lead consultant..." autocomplete="off" />
       </div>
-
-      <select id="teamFilter" class="status-filter">
-        <option value="all">All teams</option>
-        <option value="Acute Medical Team A">Acute Medical Team A</option>
-        <option value="Cardiology Team">Cardiology Team</option>
-        <option value="Respiratory Team">Respiratory Team</option>
-        <option value="Stroke Team">Stroke Team</option>
-        <option value="Surgical Team">Surgical Team</option>
-      </select>
     </div>
   </div>
 
@@ -77,116 +64,50 @@ Consultants, registrars, and junior doctors grouped by specialty team.
     <table class="data-table" id="teamsTable">
       <thead>
         <tr>
-          <th>Doctor name</th>
-          <th>Grade</th>
+          <th>Team name</th>
+          <th>Lead consultant</th>
           <th>Specialty</th>
-          <th>Team</th>
-          <th>Primary ward</th>
-          <th>On‑call today</th>
-          <th>Pager / bleep</th>
+          <th>Members</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
+        {% for team in teams %}
         <tr>
-          <td>Dr. Riley Morgan</td>
-          <td>Consultant</td>
-          <td>Acute Medicine</td>
-          <td>Acute Medical Team A</td>
-          <td>AMU</td>
-          <td><span class="badge oncall">On‑call</span></td>
-          <td>2301</td>
+          <td><a href="/team/{{ team.id }}">{{ team.name }}</a></td>
+          <td>{{ team.lead if team.lead else '—' }}</td>
+          <td>{{ team.specialty }}</td>
+          <td>{{ team.members }}</td>
+          <td><a href="/team/{{ team.id }}" class="btn-action btn-view" title="View Details">👁️</a></td>
         </tr>
-        <tr>
-          <td>Dr. Aisha Patel</td>
-          <td>ST7 Registrar</td>
-          <td>Acute Medicine</td>
-          <td>Acute Medical Team A</td>
-          <td>AMU</td>
-          <td><span class="badge oncall">On‑call</span></td>
-          <td>2302</td>
-        </tr>
-        <tr>
-          <td>Dr. James Lee</td>
-          <td>FY2</td>
-          <td>General Medicine</td>
-          <td>Acute Medical Team A</td>
-          <td>AMU</td>
-          <td><span class="badge off">Off‑call</span></td>
-          <td>2303</td>
-        </tr>
-        <tr>
-          <td>Dr. Noor Khan</td>
-          <td>Consultant</td>
-          <td>Cardiology</td>
-          <td>Cardiology Team</td>
-          <td>CCU</td>
-          <td><span class="badge off">Off‑call</span></td>
-          <td>2401</td>
-        </tr>
-        <tr>
-          <td>Dr. Sophie Green</td>
-          <td>ST5 Registrar</td>
-          <td>Cardiology</td>
-          <td>Cardiology Team</td>
-          <td>CCU</td>
-          <td><span class="badge oncall">On‑call</span></td>
-          <td>2402</td>
-        </tr>
-        <tr>
-          <td>Dr. Daniel Brooks</td>
-          <td>Consultant</td>
-          <td>Respiratory</td>
-          <td>Respiratory Team</td>
-          <td>RESP</td>
-          <td><span class="badge off">Off‑call</span></td>
-          <td>2501</td>
-        </tr>
-        <tr>
-          <td>Dr. Hannah Lewis</td>
-          <td>ST4 Registrar</td>
-          <td>Respiratory</td>
-          <td>Respiratory Team</td>
-          <td>RESP</td>
-          <td><span class="badge oncall">On‑call</span></td>
-          <td>2502</td>
-        </tr>
-        <tr>
-          <td>Dr. Peter Ahmed</td>
-          <td>Consultant</td>
-          <td>Neurology / Stroke</td>
-          <td>Stroke Team</td>
-          <td>STK</td>
-          <td><span class="badge off">Off‑call</span></td>
-          <td>2601</td>
-        </tr>
-        <tr>
-          <td>Dr. Laura Chen</td>
-          <td>Consultant Surgeon</td>
-          <td>General Surgery</td>
-          <td>Surgical Team</td>
-          <td>SSS</td>
-          <td><span class="badge oncall">On‑call</span></td>
-          <td>2701</td>
-        </tr>
-        <tr>
-          <td>Dr. Michael Scott</td>
-          <td>CT2</td>
-          <td>General Surgery</td>
-          <td>Surgical Team</td>
-          <td>SSS</td>
-          <td><span class="badge off">Off‑call</span></td>
-          <td>2702</td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
-
-    <div class="no-results" id="teamsNoResults">
-      No team members match your search or filter.
-    </div>
+    <div class="no-results" id="teamsNoResults">No teams match your search.</div>
   </div>
 </section>
+<br>
 {% endblock %}
 
 {% block extra_js %}
 <script src="/static/js/teams.js"></script>
+<script>
+  document.getElementById('exportTeamsBtn')?.addEventListener('click', function () {
+    const rows = [];
+    const headers = Array.from(document.querySelectorAll('#teamsTable thead th')).map(th => th.innerText.trim());
+    rows.push(headers);
+    document.querySelectorAll('#teamsTable tbody tr').forEach(tr => {
+      const cells = Array.from(tr.querySelectorAll('td'));
+      const row = cells.slice(0, -1).map(td => td.innerText.trim());
+      rows.push(row);
+    });
+    const csv = rows.map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'teams_export.csv';
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+</script>
 {% endblock %}

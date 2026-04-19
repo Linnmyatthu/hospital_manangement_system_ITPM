@@ -2,46 +2,41 @@
 
 {% block title %}Manage doctors | MyHospital{% endblock %}
 
-{% block active_teams %}active{% endblock %}
-
-{% block page_title %}Manage doctors{% endblock %}
-
-{% block page_subtitle %}Add, edit, and view all medical staff across specialties and grades.{% endblock %}
-
-{% block header_content %}
-<a href="/teams" class="back-link">← Back to teams</a>
-{% endblock %}
-
-{% block top_actions %}
-<button class="primary-btn" id="addDoctorBtn">Add new doctor</button>
-{{ super() }}
-{% endblock %}
-
 {% block extra_css %}
 <link rel="stylesheet" href="/static/css/manage-doctors.css">
 {% endblock %}
 
+{% block active_teams %}active{% endblock %}
+
+{% block header %}
+<a href="/teams" class="back-link primary-btn" style="text-decoration: none;">← Back to teams</a>
+<h1 class="page-title">Doctors</h1>
+<p class="page-subtitle">Add, edit, and view all medical staff across specialties and grades.</p>
+{% endblock %}
+
+{% block top_actions %}
+{{ super() }}
+{% endblock %}
+
 {% block content %}
-<!-- Summary Cards -->
 <section class="summary-row">
   <article class="summary-card">
     <h2>Total doctors</h2>
-    <p class="summary-value">84</p>
+    <p class="summary-value">{{ total_doctors }}</p>
     <p class="summary-label">Across all specialties</p>
   </article>
   <article class="summary-card">
     <h2>Consultants</h2>
-    <p class="summary-value">24</p>
+    <p class="summary-value">{{ total_consultants }}</p>
     <p class="summary-label">Lead clinicians</p>
   </article>
   <article class="summary-card">
     <h2>On duty today</h2>
-    <p class="summary-value">62</p>
+    <p class="summary-value">{{ total_on_duty }}</p>
     <p class="summary-label">Currently working</p>
   </article>
 </section>
 
-<!-- Doctor Directory Table -->
 <section class="table-card">
   <div class="table-card-header">
     <div>
@@ -49,6 +44,10 @@
       <p>Search by name, specialty, or grade to find medical staff.</p>
     </div>
     <div class="table-actions">
+      {% if user_role == 'admin' %}
+      <button class="primary-btn" id="addDoctorBtn">Add new doctor</button>
+      <button class="primary-btn" id="exportDoctorsBtn">📊 Export to CSV</button>
+      {% endif %}
       <div class="search-wrapper">
         <span class="search-icon">🔍</span>
         <input type="text" id="doctorSearch" placeholder="Search by name, specialty or grade..." autocomplete="off" />
@@ -77,66 +76,29 @@
         </tr>
       </thead>
       <tbody>
+        {% for doctor in doctors %}
         <tr>
-          <td>Dr. Riley Morgan</td>
-          <td><span class="grade-badge consultant">Consultant</span></td>
-          <td>Acute Medicine</td>
-          <td>Acute Medical Team A</td>
-          <td>AMU</td>
-          <td>2301</td>
-          <td>riley.morgan@hospital.nhs.uk</td>
-          <td><button class="action-btn edit-btn" data-id="1">Edit</button></td>
+          <td>{{ doctor.name }}</td>
+          <td><span class="grade-badge 
+            {% if 'Consultant' in doctor.grade %}consultant
+            {% elif 'Registrar' in doctor.grade or 'ST' in doctor.grade %}registrar
+            {% else %}junior{% endif %}">
+              {{ doctor.grade }}
+            </span></td>
+          <td>{{ doctor.specialty }}</td>
+          <td>{{ doctor.team_name or '-' }}</td>
+          <td>{{ doctor.ward_name or '-' }}</td>
+          <td>{{ doctor.pager or '-' }}</td>
+          <td>{{ doctor.email or '-' }}</td>
+          <td>
+            <button class="btn-action btn-edit" title="Edit" data-id="{{ doctor.id }}">✏️</button>
+            {% if user_role == 'admin' %}
+            <button class="btn-action btn-delete" title="Delete" data-id="{{ doctor.id }}"
+              data-name="{{ doctor.name }}">🗑️</button>
+            {% endif %}
+          </td>
         </tr>
-        <tr>
-          <td>Dr. Aisha Patel</td>
-          <td><span class="grade-badge registrar">ST7 Registrar</span></td>
-          <td>Acute Medicine</td>
-          <td>Acute Medical Team A</td>
-          <td>AMU</td>
-          <td>2302</td>
-          <td>aisha.patel@hospital.nhs.uk</td>
-          <td><button class="action-btn edit-btn" data-id="2">Edit</button></td>
-        </tr>
-        <tr>
-          <td>Dr. James Lee</td>
-          <td><span class="grade-badge junior">FY2</span></td>
-          <td>General Medicine</td>
-          <td>Acute Medical Team A</td>
-          <td>AMU</td>
-          <td>2303</td>
-          <td>james.lee@hospital.nhs.uk</td>
-          <td><button class="action-btn edit-btn" data-id="3">Edit</button></td>
-        </tr>
-        <tr>
-          <td>Dr. Noor Khan</td>
-          <td><span class="grade-badge consultant">Consultant</span></td>
-          <td>Cardiology</td>
-          <td>Cardiology Team</td>
-          <td>CCU</td>
-          <td>2401</td>
-          <td>noor.khan@hospital.nhs.uk</td>
-          <td><button class="action-btn edit-btn" data-id="4">Edit</button></td>
-        </tr>
-        <tr>
-          <td>Dr. Sophie Green</td>
-          <td><span class="grade-badge registrar">ST5 Registrar</span></td>
-          <td>Cardiology</td>
-          <td>Cardiology Team</td>
-          <td>CCU</td>
-          <td>2402</td>
-          <td>sophie.green@hospital.nhs.uk</td>
-          <td><button class="action-btn edit-btn" data-id="5">Edit</button></td>
-        </tr>
-        <tr>
-          <td>Dr. Daniel Brooks</td>
-          <td><span class="grade-badge consultant">Consultant</span></td>
-          <td>Respiratory</td>
-          <td>Respiratory Team</td>
-          <td>RESP</td>
-          <td>2501</td>
-          <td>daniel.brooks@hospital.nhs.uk</td>
-          <td><button class="action-btn edit-btn" data-id="6">Edit</button></td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
     <div class="no-results" id="doctorsNoResults">No doctors match your search or filter.</div>
@@ -160,8 +122,10 @@
         <select id="doctorGrade" required>
           <option value="">Select grade...</option>
           <option value="Consultant">Consultant</option>
-          <option value="ST7">ST7 Registrar</option>
+          <option value="ST7 Registrar">ST7 Registrar</option>
+          <option value="ST5 Registrar">ST5 Registrar</option>
           <option value="FY2">FY2</option>
+          <option value="Junior Doctor">Junior Doctor</option>
         </select>
       </div>
       <div class="form-row">
@@ -169,16 +133,22 @@
         <input type="text" id="doctorSpecialty" required>
       </div>
       <div class="form-row">
-        <label for="doctorTeam">Team *</label>
-        <select id="doctorTeam" required>
-          <option value="">Select team...</option>
-          <option value="Acute Medical Team A">Acute Medical Team A</option>
-          <option value="Cardiology Team">Cardiology Team</option>
+        <label for="doctorTeam">Team</label>
+        <select id="doctorTeam">
+          <option value="">None</option>
+          {% for team in teams %}
+          <option value="{{ team.id }}">{{ team.name }}</option>
+          {% endfor %}
         </select>
       </div>
       <div class="form-row">
         <label for="doctorWard">Primary ward</label>
-        <input type="text" id="doctorWard">
+        <select id="doctorWard">
+          <option value="">None</option>
+          {% for ward in wards %}
+          <option value="{{ ward.id }}">{{ ward.name }}</option>
+          {% endfor %}
+        </select>
       </div>
       <div class="form-row">
         <label for="doctorPager">Pager number</label>
@@ -188,6 +158,11 @@
         <label for="doctorEmail">Email</label>
         <input type="email" id="doctorEmail">
       </div>
+      <div class="form-row checkbox">
+        <label>
+          <input type="checkbox" id="doctorOnDuty" checked> On duty
+        </label>
+      </div>
       <div class="modal-actions">
         <button type="button" class="secondary-btn" id="modalCancel">Cancel</button>
         <button type="submit" class="primary-btn">Save doctor</button>
@@ -195,8 +170,90 @@
     </form>
   </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteDoctorModal" class="modal" style="display: none;">
+  <div class="modal-overlay" onclick="closeDeleteModal()"></div>
+  <div class="modal-dialog" style="max-width: 400px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirm Delete</h3>
+        <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong id="deleteDoctorName"></strong>?</p>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">This action cannot be undone.</p>
+        <p id="deleteErrorMsg" style="color: #d32f2f; display: none;"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+        <button type="button" class="btn-danger" id="confirmDeleteBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
 <script src="/static/js/manage-doctors.js"></script>
+<script>
+  document.getElementById('exportDoctorsBtn')?.addEventListener('click', function () {
+    const rows = [];
+    const headers = Array.from(document.querySelectorAll('#doctorsTable thead th')).map(th => th.innerText.trim());
+    rows.push(headers);
+    document.querySelectorAll('#doctorsTable tbody tr').forEach(tr => {
+      const row = Array.from(tr.querySelectorAll('td')).slice(0, -1).map(td => td.innerText.trim());
+      rows.push(row);
+    });
+    const csv = rows.map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'doctors_export.csv';
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+
+  // Delete doctor logic
+  let currentDeleteDoctorId = null;
+
+  function openDeleteModal(doctorId, doctorName) {
+    currentDeleteDoctorId = doctorId;
+    document.getElementById('deleteDoctorName').innerText = doctorName;
+    document.getElementById('deleteErrorMsg').style.display = 'none';
+    document.getElementById('deleteDoctorModal').style.display = 'flex';
+  }
+
+  function closeDeleteModal() {
+    document.getElementById('deleteDoctorModal').style.display = 'none';
+    currentDeleteDoctorId = null;
+  }
+
+  document.getElementById('confirmDeleteBtn')?.addEventListener('click', async function () {
+    if (!currentDeleteDoctorId) return;
+    try {
+      const response = await fetch(`/api/doctors/${currentDeleteDoctorId}`, { method: 'DELETE' });
+      const result = await response.json();
+      if (response.ok) {
+        location.reload();
+      } else {
+        document.getElementById('deleteErrorMsg').innerText = result.error || 'Failed to delete doctor.';
+        document.getElementById('deleteErrorMsg').style.display = 'block';
+      }
+    } catch (err) {
+      document.getElementById('deleteErrorMsg').innerText = 'Network error. Please try again.';
+      document.getElementById('deleteErrorMsg').style.display = 'block';
+    }
+  });
+
+  // Attach delete button listeners after table loads (delegation)
+  document.querySelector('#doctorsTable tbody')?.addEventListener('click', (e) => {
+    const deleteBtn = e.target.closest('.delete-btn');
+    if (deleteBtn) {
+      const doctorId = deleteBtn.getAttribute('data-id');
+      const doctorName = deleteBtn.getAttribute('data-name');
+      openDeleteModal(doctorId, doctorName);
+    }
+  });
+</script>
 {% endblock %}

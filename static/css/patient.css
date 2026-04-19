@@ -7,16 +7,16 @@
     box-shadow: var(--shadow-soft);
     display: flex;
     flex-direction: column;
-    margin-top: 0;          /* ensure no extra top margin */
+    margin-top: 0;         
 }
 
-/* ===== CARD HEADER (title + actions) ===== */
+/* CARD HEADER */
 .table-card-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 1rem;
-    margin-bottom: 0.8rem;  /* space between header and table */
+    margin-bottom: 0.8rem; 
 }
 
 .table-card-header h2 {
@@ -30,16 +30,16 @@
     color: var(--text-muted);
 }
 
-/* ===== ACTION BUTTONS + SEARCH (inside header) ===== */
+/*ACTION BUTTONS + SEARCH (inside header)*/
 .table-actions {
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    flex-wrap: wrap;        /* allows wrapping on small screens */
+    flex-wrap: wrap;        
 }
 
 .primary-btn {
-    padding: 0.5rem 1rem;   /* slightly smaller to match search height */
+    padding: 0.5rem 1rem;   
     background: var(--accent);
     color: white;
     border: none;
@@ -48,14 +48,14 @@
     font-size: 0.9rem;
     cursor: pointer;
     transition: background 0.2s;
-    white-space: nowrap;    /* prevent button text from wrapping */
+    white-space: nowrap;    
 }
 
 .primary-btn:hover {
     background: var(--accent-soft);
 }
 
-/* ===== SEARCH WRAPPER ===== */
+/* SEARCH WRAPPER */
 .search-wrapper {
     position: relative;
 }
@@ -71,7 +71,7 @@
 }
 
 .search-wrapper input {
-    padding: 0.5rem 1rem 0.5rem 2.2rem;  /* adjusted for icon */
+    padding: 0.5rem 1rem 0.5rem 2.2rem;  
     border: 1px solid var(--border-subtle);
     border-radius: 8px;
     background: var(--bg-main);
@@ -81,7 +81,7 @@
     width: 100%;
 }
 
-/* ===== TABLE STYLES ===== */
+/* TABLE STYLES */
 .table-scroll {
     overflow-x: auto;
 }
@@ -125,7 +125,7 @@
     text-decoration: underline;
 }
 
-/* ===== STATUS BADGES ===== */
+/* STATUS BADGES */
 .status-badge {
     display: inline-block;
     padding: 0.25rem 0.8rem;
@@ -149,25 +149,26 @@
     color: #721c24;
 }
 
-/* ===== ACTION BUTTONS IN TABLE ===== */
+/* ACTION BUTTONS IN TABLE */
 .actions {
     display: flex;
     gap: 0.5rem;
 }
 
 .btn-action {
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    border: 1px solid var(--border-subtle);
-    background: var(--bg-main);
-    color: var(--text-main);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    transition: all 0.2s;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-main);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 1rem;
+  margin: 0 2px;
+  transition: all 0.2s ease;
 }
 
 .btn-action:hover {
@@ -190,7 +191,7 @@
     color: #d32f2f;
 }
 
-/* ===== NO RESULTS MESSAGE ===== */
+/* NO RESULTS MESSAGE */
 .no-results {
     padding: 2rem;
     text-align: center;
@@ -198,7 +199,7 @@
     font-style: italic;
 }
 
-/* ===== MODAL STYLES (unchanged) ===== */
+/* MODAL STYLES */
 .modal {
     display: none;
     position: fixed;
@@ -271,7 +272,7 @@
     gap: 1rem;
 }
 
-/* ===== FORM ELEMENTS (for modals) ===== */
+/* FORM ELEMENTS */
 .form-group {
     margin-bottom: 1.2rem;
 }
@@ -343,7 +344,7 @@ textarea.form-input {
     background: var(--bg-hero);
 }
 
-/* ===== RESPONSIVE ===== */
+/* RESPONSIVE */
 @media (max-width: 768px) {
     .table-card-header {
         flex-direction: column;

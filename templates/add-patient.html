@@ -15,12 +15,10 @@
 {% endblock %}
 
 {% block top_actions %}
-<!-- Shortcuts are now inherited from base.html -->
 {{ super() }}
 {% endblock %}
 
 {% block content %}
-<!-- CARD ROW (TOP) -->
 <section class="form-grid">
   <article class="card form-card">
     <h2>Patient demographics</h2>
@@ -47,9 +45,9 @@
         <label for="sex">Sex *</label>
         <select id="sex" required>
           <option value="">Select...</option>
-          <option value="M">Male</option>
-          <option value="F">Female</option>
-          <option value="O">Other</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
         </select>
       </div>
       <div class="form-row">
@@ -75,12 +73,12 @@
       </div>
       <div class="form-row">
         <label for="ward">Ward * <span class="ward-info">(Gender type shown)</span></label>
-        <!-- DYNAMIC WARD DROPDOWN from Flask -->
         <select id="ward" required>
           <option value="">Select ward...</option>
           {% for ward in wards %}
-          <option value="{{ ward.id }}" data-gender="{{ ward.gender_type|default('Mixed') }}">
-            {{ ward.name }} ({{ ward.gender_type|default('Mixed') }})
+          <option value="{{ ward.id }}" data-gender="{{ ward.gender_type|default('Mixed') }}"
+            data-capacity="{{ ward.capacity }}" data-occupied="{{ ward.occupied }}">
+            {{ ward.name }} ({{ ward.gender_type|default('Mixed') }}) – {{ ward.occupied }}/{{ ward.capacity }} beds
           </option>
           {% endfor %}
         </select>
@@ -97,7 +95,6 @@
       </div>
       <div class="form-row">
         <label for="consultant">Consultant *</label>
-        <!-- DYNAMIC DOCTOR DROPDOWN from Flask -->
         <select id="consultant" required>
           <option value="">Select consultant...</option>
           {% for doctor in doctors %}

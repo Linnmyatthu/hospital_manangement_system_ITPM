@@ -1,5 +1,3 @@
-/* patient-detail.css - only patient detail specific styles */
-
 /* BACK BUTTON */
 .back-btn {
   padding: 0.5rem 0.9rem;
@@ -237,7 +235,7 @@
   color: var(--text-main);
 }
 
-/* RESPONSIVE - only patient detail specific */
+/* RESPONSIVE*/
 @media (max-width: 960px) {
   .patient-info-grid { 
     grid-template-columns: repeat(2, 1fr); 

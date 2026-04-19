@@ -1,5 +1,3 @@
-/* team-patients.css - only team patients page specific styles */
-
 /* BACK LINK */
 .back-link {
   display: inline-block;
@@ -258,7 +256,7 @@
   color: var(--text-muted);
 }
 
-/* RESPONSIVE - only page-specific */
+/* RESPONSIVE */
 @media (max-width: 960px) {
   .info-grid {
     grid-template-columns: 1fr;

@@ -24,7 +24,10 @@
       <p>Use the search box to filter by ID or name.</p>
     </div>
     <div class="table-actions">
+      {% if user_role == 'admin' %}
       <a href="/patients/add" class="primary-btn">+ Add Patient</a>
+      <a href="/reports/generate" class="primary-btn">📊 Export to CSV</a>
+      {% endif %}
       <div class="search-wrapper">
         <span class="search-icon">🔍</span>
         <input type="text" id="searchInput" placeholder="Search patients by name or ID..." autocomplete="off" />
@@ -57,25 +60,23 @@
           <td>{{ p.admission_datetime[:10] if p.admission_datetime else '—' }}</td>
           <td><span class="status-badge {{ p.status|lower }}">{{ p.status }}</span></td>
           <td class="actions">
-            <button onclick="viewPatient('{{ p.id }}')" class="btn-action btn-view" title="View Details">📇</button>
+            <button onclick="viewPatient('{{ p.id }}')" class="btn-action btn-view" title="View Details">👁️</button>
+            {% if user_role == 'admin' %}
             <button data-patient-id="{{ p.id }}" data-patient-name="{{ p.name|e }}"
               data-patient-gender="{{ p.gender|e }}" data-current-ward="{{ (p.ward_name or '')|e }}"
               class="btn-action btn-transfer" onclick="openTransferModal(this)" title="Transfer">🔄</button>
             <button onclick="dischargePatient('{{ p.id }}', '{{ p.name|e }}')" class="btn-action btn-discharge"
-              title="Discharge">🚪</button>
+              title="Discharge">🗑️</button>
+            {% endif %}
           </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
-
-    <div class="no-results" id="patientNoResults" style="display:none">
-      No patients match your search.
-    </div>
+    <div class="no-results" id="patientNoResults" style="display:none">No patients match your search.</div>
   </div>
 </section>
 
-<!-- TRANSFER MODAL -->
 <div id="transferModal" class="modal">
   <div class="modal-overlay" onclick="closeTransferModal()"></div>
   <div class="modal-dialog">
@@ -84,22 +85,18 @@
         <h3 class="modal-title">Transfer Patient</h3>
         <button class="modal-close" onclick="closeTransferModal()">&times;</button>
       </div>
-
       <form id="transferForm" onsubmit="return submitTransfer(event)">
         <div class="modal-body">
           <input type="hidden" id="transferPatientId" name="patient_id">
           <input type="hidden" id="transferPatientGender" name="patient_gender">
-
           <div class="form-group">
             <label>Patient Name</label>
             <input type="text" id="transferPatientName" class="form-input" readonly>
           </div>
-
           <div class="form-group">
             <label>Current Ward</label>
             <input type="text" id="currentWard" class="form-input" readonly>
           </div>
-
           <div class="form-group">
             <label>Select New Ward <span class="required">*</span></label>
             <select id="newWardSelect" name="new_ward_id" class="form-input" required>
@@ -114,14 +111,12 @@
               ⚠️ Gender mismatch! This ward is for a different gender.
             </small>
           </div>
-
           <div class="form-group">
             <label>Reason for Transfer <span class="required">*</span></label>
             <textarea id="transferReason" name="reason" class="form-input" rows="4" required
               placeholder="Enter reason for transfer..."></textarea>
           </div>
         </div>
-
         <div class="modal-footer">
           <button type="button" class="btn-secondary" onclick="closeTransferModal()">Cancel</button>
           <button type="submit" class="btn-primary">Transfer Patient</button>
@@ -130,6 +125,7 @@
     </div>
   </div>
 </div>
+<br>
 {% endblock %}
 
 {% block extra_js %}

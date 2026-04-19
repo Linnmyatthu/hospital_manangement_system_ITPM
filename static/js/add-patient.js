@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const menuToggle = document.getElementById('menuToggle');
-  const sidebar = document.getElementById('sidebar');
   const dobInput = document.getElementById('dob');
   const ageInput = document.getElementById('age');
   const sexSelect = document.getElementById('sex');
@@ -10,38 +8,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const wardGenderError = document.getElementById('wardGenderError');
   const wardGenderInfo = document.getElementById('wardGenderInfo');
 
-  /* MOBILE SIDEBAR TOGGLE */
-  if (menuToggle && sidebar) {
-    menuToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('sidebar-open');
-      sidebar.classList.toggle('sidebar-closed');
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
-        sidebar.classList.remove('sidebar-open');
-        sidebar.classList.add('sidebar-closed');
-      }
-    });
-  }
-
-  /* AUTO-CALCULATE AGE FROM DOB */
   if (dobInput && ageInput) {
     dobInput.addEventListener('change', () => {
       const dob = new Date(dobInput.value);
       const today = new Date();
       let age = today.getFullYear() - dob.getFullYear();
       const monthDiff = today.getMonth() - dob.getMonth();
-      
       if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
         age--;
       }
-      
       ageInput.value = age >= 0 ? age : '';
     });
   }
 
-  /* SET DEFAULT ADMISSION DATE TO NOW */
   const admissionDateInput = document.getElementById('admissionDate');
   if (admissionDateInput) {
     const now = new Date();
@@ -53,87 +32,48 @@ document.addEventListener('DOMContentLoaded', () => {
     admissionDateInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 
-  /* WARD GENDER VALIDATION */
   function validateWardGender() {
     const patientSex = sexSelect.value;
     const selectedWard = wardSelect.options[wardSelect.selectedIndex];
     const wardGender = selectedWard ? selectedWard.getAttribute('data-gender') : null;
 
-    // Hide all messages initially
     wardGenderError.classList.remove('show');
     wardGenderInfo.classList.remove('show');
     wardSelect.classList.remove('invalid', 'valid');
 
-    // If no sex selected, show info message
     if (!patientSex) {
-      if (wardSelect.value) {
-        wardGenderInfo.classList.add('show');
-      }
+      if (wardSelect.value) wardGenderInfo.classList.add('show');
       return false;
     }
-
-    // If no ward selected, don't validate yet
-    if (!wardSelect.value) {
-      return true;
-    }
-
-    // Check gender compatibility
+    if (!wardSelect.value) return true;
     if (wardGender === 'Mixed') {
       wardSelect.classList.add('valid');
       return true;
     }
-
-    // Convert sex value to full gender
-    let patientGender;
-    if (patientSex === 'M') {
-      patientGender = 'Male';
-    } else if (patientSex === 'F') {
-      patientGender = 'Female';
-    } else {
-      // For "Other", only mixed wards are allowed
-      if (wardGender !== 'Mixed') {
-        wardGenderError.textContent = `⚠️ This ward only accepts ${wardGender} patients. Please select a Mixed ward for patients with "Other" sex.`;
-        wardGenderError.classList.add('show');
-        wardSelect.classList.add('invalid');
-        return false;
-      }
-      wardSelect.classList.add('valid');
-      return true;
-    }
-
-    // Validate gender match
-    if (wardGender !== patientGender) {
-      const wardName = selectedWard.text.split(' - ')[0];
-      wardGenderError.textContent = `⚠️ Gender mismatch! ${wardName} is for ${wardGender} patients only. Patient sex is ${patientGender}.`;
+    if (patientSex === 'Other') {
+      wardGenderError.textContent = `⚠️ This ward only accepts ${wardGender} patients. Please select a Mixed ward for patients with "Other" sex.`;
       wardGenderError.classList.add('show');
       wardSelect.classList.add('invalid');
       return false;
     }
-
+    if (wardGender !== patientSex) {
+      const wardName = selectedWard.text.split(' - ')[0];
+      wardGenderError.textContent = `⚠️ Gender mismatch! ${wardName} is for ${wardGender} patients only. Patient sex is ${patientSex}.`;
+      wardGenderError.classList.add('show');
+      wardSelect.classList.add('invalid');
+      return false;
+    }
     wardSelect.classList.add('valid');
     return true;
   }
 
-  // Validate when sex changes
-  if (sexSelect) {
-    sexSelect.addEventListener('change', () => {
-      validateWardGender();
-    });
-  }
+  if (sexSelect) sexSelect.addEventListener('change', validateWardGender);
+  if (wardSelect) wardSelect.addEventListener('change', validateWardGender);
 
-  // Validate when ward changes
-  if (wardSelect) {
-    wardSelect.addEventListener('change', () => {
-      validateWardGender();
-    });
-  }
-
-  /* FORM SUBMISSION – REAL FETCH TO BACKEND */
   if (submitBtn) {
     submitBtn.addEventListener('click', (e) => {
       e.preventDefault();
 
-      // ---- Validation (unchanged) ----
       const firstName = document.getElementById('firstName').value.trim();
       const lastName = document.getElementById('lastName').value.trim();
       const dob = document.getElementById('dob').value;
@@ -145,56 +85,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const consultant = document.getElementById('consultant').value;
       const diagnosis = document.getElementById('diagnosis').value.trim();
 
-      if (!firstName) {
-        alert('⚠️ Please enter patient first name');
-        document.getElementById('firstName').focus();
-        return;
-      }
-      if (!lastName) {
-        alert('⚠️ Please enter patient last name');
-        document.getElementById('lastName').focus();
-        return;
-      }
-      if (!dob) {
-        alert('⚠️ Please enter date of birth');
-        document.getElementById('dob').focus();
-        return;
-      }
-      if (!sex) {
-        alert('⚠️ Please select patient sex');
-        document.getElementById('sex').focus();
-        return;
-      }
-      if (!nhsNumber) {
-        alert('⚠️ Please enter NHS number');
-        document.getElementById('nhsNumber').focus();
-        return;
-      }
-      if (!admissionDate) {
-        alert('⚠️ Please enter admission date and time');
-        document.getElementById('admissionDate').focus();
-        return;
-      }
-      if (!ward) {
-        alert('⚠️ Please select a ward');
-        document.getElementById('ward').focus();
-        return;
-      }
-      if (!bed) {
-        alert('⚠️ Please enter bed location');
-        document.getElementById('bed').focus();
-        return;
-      }
-      if (!consultant) {
-        alert('⚠️ Please select a consultant');
-        document.getElementById('consultant').focus();
-        return;
-      }
-      if (!diagnosis) {
-        alert('⚠️ Please enter primary diagnosis');
-        document.getElementById('diagnosis').focus();
-        return;
-      }
+      if (!firstName) { alert('⚠️ Please enter patient first name'); document.getElementById('firstName').focus(); return; }
+      if (!lastName) { alert('⚠️ Please enter patient last name'); document.getElementById('lastName').focus(); return; }
+      if (!dob) { alert('⚠️ Please enter date of birth'); document.getElementById('dob').focus(); return; }
+      if (!sex) { alert('⚠️ Please select patient sex'); document.getElementById('sex').focus(); return; }
+      if (!nhsNumber) { alert('⚠️ Please enter NHS number'); document.getElementById('nhsNumber').focus(); return; }
+      if (!admissionDate) { alert('⚠️ Please enter admission date and time'); document.getElementById('admissionDate').focus(); return; }
+      if (!ward) { alert('⚠️ Please select a ward'); document.getElementById('ward').focus(); return; }
+      if (!bed) { alert('⚠️ Please enter bed location'); document.getElementById('bed').focus(); return; }
+      if (!consultant) { alert('⚠️ Please select a consultant'); document.getElementById('consultant').focus(); return; }
+      if (!diagnosis) { alert('⚠️ Please enter primary diagnosis'); document.getElementById('diagnosis').focus(); return; }
 
       if (!validateWardGender()) {
         alert('❌ Cannot admit patient!\n\nWard gender type does not match patient sex.\n\nPlease select a compatible ward:\n• Male patients → Male or Mixed wards\n• Female patients → Female or Mixed wards\n• Other → Mixed wards only');
@@ -202,116 +102,57 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Optional fields
       const phone = document.getElementById('phone').value.trim();
       const address = document.getElementById('address').value.trim();
       const notes = document.getElementById('notes').value.trim();
       const age = document.getElementById('age').value;
 
-      // Prepare data – only what the backend expects
-      const patientData = {
-        firstName,
-        lastName,
-        dob,
-        age,
-        sex,
-        nhsNumber,
-        phone,
-        address,
-        admissionDate,
-        ward,          // Ward ID (or code, depending on your backend)
-        bed,
-        consultant,    // Doctor ID (or code)
-        diagnosis,
-        notes
-      };
+      const patientData = { firstName, lastName, dob, age, sex, nhsNumber, phone, address, admissionDate, ward, bed, consultant, diagnosis, notes };
 
-      // Disable button while submitting
       submitBtn.disabled = true;
       submitBtn.textContent = 'Saving...';
 
-      // Send to Flask
       fetch('/patients/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(patientData)
       })
       .then(response => {
-        if (!response.ok) {
-          return response.json().then(err => { throw new Error(err.message || 'Server error'); });
-        }
+        if (!response.ok) return response.json().then(err => { throw new Error(err.error || 'Server error'); });
         return response.json();
       })
       .then(data => {
-        console.log('Patient saved:', data);
-
-        // Show success message
-        if (successAlert) {
-          successAlert.style.display = 'flex';
-        }
-
-        // Redirect after a short delay
-        setTimeout(() => {
-          window.location.href = '/patients';
-        }, 1500);
+        if (successAlert) successAlert.style.display = 'flex';
+        setTimeout(() => window.location.href = '/patients', 1500);
       })
       .catch(error => {
-        console.error('Error saving patient:', error);
-        alert('❌ Failed to add patient: ' + error.message);
-        // Re-enable button
+        if (error.message.includes('full')) alert('❌ ' + error.message);
+        else alert('❌ Failed to add patient: ' + error.message);
         submitBtn.disabled = false;
         submitBtn.textContent = 'Add patient';
       });
     });
   }
 
-  /* LIGHT/DARK MODE TOGGLE */
-  const lightModeToggle = document.getElementById('lightModeToggle');
-  if (lightModeToggle) {
-    lightModeToggle.addEventListener('click', () => {
-      if (typeof toggleThemeFromButton === 'function') {
-        toggleThemeFromButton();
-      } else {
-        const html = document.documentElement;
-        const currentTheme = html.getAttribute('data-theme');
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        html.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        lightModeToggle.textContent = newTheme === 'light' ? 'Dark mode' : 'Light mode';
-      }
-    });
-  }
-
-  /* NHS NUMBER FORMATTING */
+  // NHS number formatting
   const nhsNumberInput = document.getElementById('nhsNumber');
   if (nhsNumberInput) {
     nhsNumberInput.addEventListener('input', (e) => {
       let value = e.target.value.replace(/\D/g, '').substring(0, 10);
-      if (value.length > 6) {
-        value = value.substring(0, 3) + ' ' + value.substring(3, 6) + ' ' + value.substring(6);
-      } else if (value.length > 3) {
-        value = value.substring(0, 3) + ' ' + value.substring(3);
-      }
+      if (value.length > 6) value = value.substring(0, 3) + ' ' + value.substring(3, 6) + ' ' + value.substring(6);
+      else if (value.length > 3) value = value.substring(0, 3) + ' ' + value.substring(3);
       e.target.value = value;
     });
   }
 
-  /* PHONE NUMBER FORMATTING */
   const phoneInput = document.getElementById('phone');
   if (phoneInput) {
     phoneInput.addEventListener('input', (e) => {
       let value = e.target.value.replace(/\D/g, '').substring(0, 11);
-      if (value.length > 5) {
-        value = value.substring(0, 5) + ' ' + value.substring(5);
-      }
+      if (value.length > 5) value = value.substring(0, 5) + ' ' + value.substring(5);
       e.target.value = value;
     });
   }
 
-  /* SHOW INFO MESSAGE ON PAGE LOAD */
-  if (!sexSelect.value && wardGenderInfo) {
-    wardGenderInfo.classList.add('show');
-  }
-
-  console.log('Add Patient form initialized successfully');
+  if (!sexSelect.value && wardGenderInfo) wardGenderInfo.classList.add('show');
 });
