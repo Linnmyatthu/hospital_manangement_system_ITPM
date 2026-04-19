@@ -8,4 +8,3 @@
 | Consultant | consultant@hospital.com | consultant123 |
 | Junior Doctor | junior@hospital.com | junior123 |
 
-> ⚠️ **Note:** Change these credentials before deploying to a production environment.
