@@ -9,7 +9,7 @@ from flask import (
     make_response,
     session       
 )
-import tempfile
+
 from functools import wraps
 import os
 import sqlite3
@@ -48,7 +48,7 @@ try:
 except OSError:
     pass
 
-DATABASE_PATH = os.path.join(tempfile.gettempdir(), "hospital.db") if os.environ.get('VERCEL') else os.path.join(app.instance_path, "hospital.db")
+DATABASE_PATH = os.path.join(app.instance_path, "hospital.db")
 
 def get_db_connection():
     conn = sqlite3.connect(DATABASE_PATH)
