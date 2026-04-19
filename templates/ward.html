@@ -14,6 +14,7 @@
 {% block top_actions %}
 <a href="/patients" class="shortcut-btn">View all patients</a>
 <a href="/patients/add" class="shortcut-btn">+ Admit patient</a>
+{{ super() }}
 {% endblock %}
 
 {% block content %}
@@ -28,6 +29,7 @@
                     {% else %}🏥{% endif %}
                     {{ ward.name }}
                 </h2>
+                <span class="badge badge-info">{{ ward.type }}</span>
                 <span class="ward-type 
                     {% if ward.gender_type == 'Male' %}male
                     {% elif ward.gender_type == 'Female' %}female
@@ -106,6 +108,7 @@
 </section>
 {% endfor %}
 
+<!-- Transfer Modal -->
 <div id="transferModal" class="modal">
     <div class="modal-overlay" onclick="closeTransferModal()"></div>
     <div class="modal-dialog">
@@ -114,22 +117,18 @@
                 <h3 class="modal-title">Transfer Patient</h3>
                 <button class="modal-close" onclick="closeTransferModal()">&times;</button>
             </div>
-
             <form id="transferForm" onsubmit="return submitTransfer(event)">
                 <div class="modal-body">
                     <input type="hidden" id="transferPatientId">
                     <input type="hidden" id="transferPatientGender">
-
                     <div class="form-group">
                         <label>Patient Name</label>
                         <input type="text" id="transferPatientName" class="form-input" readonly>
                     </div>
-
                     <div class="form-group">
                         <label>Current Ward</label>
                         <input type="text" id="currentWard" class="form-input" readonly>
                     </div>
-
                     <div class="form-group">
                         <label>Select New Ward <span class="required">*</span></label>
                         <select id="newWardSelect" class="form-input" required>
@@ -143,14 +142,12 @@
                             ⚠️ Gender mismatch! This ward is for different gender.
                         </small>
                     </div>
-
                     <div class="form-group">
                         <label>Reason for Transfer <span class="required">*</span></label>
                         <textarea id="transferReason" class="form-input" rows="4" required
                             placeholder="Enter reason for transfer..."></textarea>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn-secondary" onclick="closeTransferModal()">Cancel</button>
                     <button type="submit" class="btn-primary">Transfer Patient</button>

@@ -76,8 +76,9 @@
         <select id="ward" required>
           <option value="">Select ward...</option>
           {% for ward in wards %}
-          <option value="{{ ward.id }}" data-gender="{{ ward.gender_type|default('Mixed') }}">
-            {{ ward.name }} ({{ ward.gender_type|default('Mixed') }})
+          <option value="{{ ward.id }}" data-gender="{{ ward.gender_type|default('Mixed') }}"
+            data-capacity="{{ ward.capacity }}" data-occupied="{{ ward.occupied }}">
+            {{ ward.name }} ({{ ward.gender_type|default('Mixed') }}) – {{ ward.occupied }}/{{ ward.capacity }} beds
           </option>
           {% endfor %}
         </select>

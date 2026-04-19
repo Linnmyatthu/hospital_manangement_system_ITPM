@@ -4,13 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const refreshBtn = document.getElementById('refreshBtn');
   const lastUpdate = document.getElementById('lastUpdate');
   const feedList = document.getElementById('feedList');
-  const wardList = document.getElementById('wardList');
 
-  const admissionsEl = document.getElementById('admissionsCount');
-  const dischargesEl = document.getElementById('dischargesCount');
-  const alertsEl = document.getElementById('alertsCount');
-  const staffEl = document.getElementById('staffCount');
-
+  // mobile sidebar toggle
   if (menuToggle && sidebar) {
     menuToggle.addEventListener('click', () => {
       const isHidden = window.getComputedStyle(sidebar).display === 'none';
@@ -18,118 +13,132 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function getUKTimeString(date) {
-    return date.toLocaleTimeString('en-GB', {
-      timeZone: 'Europe/London',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    });
-  }
+  // sample new activities
+  const sampleActivities = [
+    {
+      type: 'admission',
+      time: '13:45',
+      patient: 'Thomas Wright',
+      age: '45M',
+      ward: 'CCU Bay 1',
+      diagnosis: 'Acute MI',
+      doctor: 'Dr. N. Khan'
+    },
+    {
+      type: 'discharge',
+      time: '13:42',
+      patient: 'Patricia White',
+      age: '66F',
+      ward: 'AMU Bay 1',
+      stay: '6 days'
+    },
+    {
+      type: 'treatment',
+      time: '13:38',
+      patient: 'David Wilson',
+      treatment: 'ECG',
+      ward: 'AMU Bay 5',
+      doctor: 'Dr. R. Morgan'
+    },
+    {
+      type: 'alert',
+      time: '13:35',
+      message: 'ICU capacity reached 92%',
+      meta: 'Warning threshold exceeded'
+    }
+  ];
 
-  async function refreshLiveData() {
-    try {
-      const statsRes = await fetch('/api/live/stats');
-      const stats = await statsRes.json();
-      admissionsEl.textContent = stats.admissions_today;
-      dischargesEl.textContent = stats.discharges_today;
-      alertsEl.textContent = stats.critical_alerts;
-      staffEl.textContent = stats.staff_on_duty;
+  // add new activity to feed
+  function addActivity(activity) {
+    const item = document.createElement('div');
+    item.className = `feed-item ${activity.type}-item`;
 
-      const feedRes = await fetch('/api/live/feed');
-      const activities = await feedRes.json();
-      feedList.innerHTML = '';
+    let badgeClass = '';
+    let badgeText = '';
+    let content = '';
 
-      if (activities.length === 0) {
-        const emptyItem = document.createElement('div');
-        emptyItem.className = 'feed-item';
-        emptyItem.innerHTML = '<p class="feed-text">No recent activity today</p>';
-        feedList.appendChild(emptyItem);
-      } else {
-        activities.forEach(act => {
-          const item = document.createElement('div');
-          item.className = `feed-item ${act.type}-item`;
+    if (activity.type === 'admission') {
+      badgeClass = 'admission-badge';
+      badgeText = 'Admission';
+      content = `<p class="feed-text"><strong>${activity.patient}</strong> (${activity.age}) admitted to <strong>${activity.ward}</strong></p><p class="feed-meta">${activity.diagnosis} • ${activity.doctor}</p>`;
+    } else if (activity.type === 'discharge') {
+      badgeClass = 'discharge-badge';
+      badgeText = 'Discharge';
+      content = `<p class="feed-text"><strong>${activity.patient}</strong> (${activity.age}) discharged from <strong>${activity.ward}</strong></p><p class="feed-meta">Length of stay: ${activity.stay}</p>`;
+    } else if (activity.type === 'treatment') {
+      badgeClass = 'treatment-badge';
+      badgeText = 'Treatment';
+      content = `<p class="feed-text"><strong>${activity.patient}</strong> received <strong>${activity.treatment}</strong></p><p class="feed-meta">${activity.ward} • ${activity.doctor}</p>`;
+    } else if (activity.type === 'alert') {
+      badgeClass = 'alert-badge';
+      badgeText = 'Alert';
+      content = `<p class="feed-text"><strong>${activity.message}</strong></p><p class="feed-meta">${activity.meta}</p>`;
+    }
 
-          let badgeClass = '';
-          let badgeText = '';
+    item.innerHTML = `
+      <div class="feed-time">${activity.time}</div>
+      <div class="feed-content">
+        <div class="feed-badge ${badgeClass}">${badgeText}</div>
+        ${content}
+      </div>
+    `;
 
-          switch (act.type) {
-            case 'admission':
-              badgeClass = 'admission-badge';
-              badgeText = 'Admission';
-              break;
-            case 'discharge':
-              badgeClass = 'discharge-badge';
-              badgeText = 'Discharge';
-              break;
-            case 'treatment':
-              badgeClass = 'treatment-badge';
-              badgeText = 'Treatment';
-              break;
-            case 'alert':
-              badgeClass = 'alert-badge';
-              badgeText = 'Alert';
-              break;
-            default:
-              badgeClass = 'info-badge';
-              badgeText = act.type.charAt(0).toUpperCase() + act.type.slice(1);
-          }
-
-          const content = act.description ? `<p class="feed-text">${act.description}</p>` : '<p class="feed-text">No details</p>';
-
-          item.innerHTML = `
-            <div class="feed-time">${act.time}</div>
-            <div class="feed-content">
-              <div class="feed-badge ${badgeClass}">${badgeText}</div>
-              ${content}
-            </div>
-          `;
-          feedList.appendChild(item);
-        });
-      }
-
-      const wardsRes = await fetch('/api/live/wards');
-      const wards = await wardsRes.json();
-      wardList.innerHTML = '';
-      wards.forEach(ward => {
-        const percent = ward.percent;
-        let meterClass = 'ok-meter';
-        let textClass = 'ok-text';
-        if (percent >= 90) {
-          meterClass = 'critical-meter';
-          textClass = 'critical-text';
-        } else if (percent >= 80) {
-          meterClass = 'warning-meter';
-          textClass = 'warning-text';
-        }
-
-        const wardItem = document.createElement('div');
-        wardItem.className = 'ward-item';
-        wardItem.innerHTML = `
-          <div class="ward-info">
-            <h3>${ward.code || ward.name}</h3>
-            <p>${ward.occupied} / ${ward.capacity} beds</p>
-          </div>
-          <div class="ward-meter ${meterClass}">
-            <div class="meter-fill" style="width: ${percent}%;"></div>
-          </div>
-          <span class="ward-percent ${textClass}">${percent}%</span>
-        `;
-        wardList.appendChild(wardItem);
-      });
-
-      const now = new Date();
-      lastUpdate.textContent = getUKTimeString(now);
-    } catch (err) {
-      // Silently handle fetch errors
+    if (feedList) {
+      feedList.insertBefore(item, feedList.firstChild);
+      
+      // fade in animation
+      item.style.opacity = '0';
+      setTimeout(() => {
+        item.style.transition = 'opacity 0.3s';
+        item.style.opacity = '1';
+      }, 10);
     }
   }
 
-  refreshLiveData();
-
+  // refresh button - add random activity
   if (refreshBtn) {
-    refreshBtn.addEventListener('click', refreshLiveData);
+    refreshBtn.addEventListener('click', () => {
+      const randomActivity = sampleActivities[Math.floor(Math.random() * sampleActivities.length)];
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      randomActivity.time = `${hours}:${minutes}`;
+      
+      addActivity(randomActivity);
+      
+      // update last update time
+      if (lastUpdate) {
+        lastUpdate.textContent = 'just now';
+      }
+
+      // increment admission/discharge counters
+      if (randomActivity.type === 'admission') {
+        const admCount = document.getElementById('admissionsCount');
+        if (admCount) {
+          const current = parseInt(admCount.textContent);
+          admCount.textContent = current + 1;
+        }
+      } else if (randomActivity.type === 'discharge') {
+        const dischCount = document.getElementById('dischargesCount');
+        if (dischCount) {
+          const current = parseInt(dischCount.textContent);
+          dischCount.textContent = current + 1;
+        }
+      } else if (randomActivity.type === 'alert') {
+        const alertCount = document.getElementById('alertsCount');
+        if (alertCount) {
+          const current = parseInt(alertCount.textContent);
+          alertCount.textContent = current + 1;
+        }
+      }
+    });
   }
 
-  setInterval(refreshLiveData, 30000);
+  // auto-refresh every 30 seconds (optional)
+  setInterval(() => {
+    if (lastUpdate) {
+      const now = new Date();
+      lastUpdate.textContent = 'just now';
+    }
+  }, 30000);
 });

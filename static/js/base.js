@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuToggle = document.getElementById('menuToggle');
     const sidebar = document.getElementById('sidebar');
 
-    // Settings dropdown
     if (settingsToggle && settingsMenu) {
         settingsToggle.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -19,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Light / Dark mode toggle (uses shared theme.js)
     if (lightBtn) {
         lightBtn.addEventListener('click', () => {
             if (typeof toggleThemeFromButton === 'function') {
@@ -28,18 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Mobile sidebar toggle
     if (menuToggle && sidebar) {
-        const setInitialState = () => {
-            if (window.innerWidth <= 960) {
-                sidebar.classList.remove('sidebar-open');
-            } else {
-                sidebar.classList.remove('sidebar-open');
-            }
-        };
-
-        setInitialState();
-
         menuToggle.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -55,7 +42,5 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-
-        window.addEventListener('resize', setInitialState);
     }
 });

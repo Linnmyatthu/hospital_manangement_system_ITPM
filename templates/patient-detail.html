@@ -9,7 +9,9 @@
 <div class="top-left-row">
   <a href="/patients" class="back-btn">← Back to Patients</a>
 </div>
+<br>
 
+<!-- CARD SECTION (basic patient info) -->
 <section class="content-section">
   <div class="info-card">
     <div class="info-card-header">
@@ -35,6 +37,14 @@
         <span class="info-value">{{ patient.age }}</span>
       </div>
       <div class="info-item">
+        <span class="info-label">NHS Number</span>
+        <span class="info-value">{{ patient.nhs_number or 'Not recorded' }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Contact Phone</span>
+        <span class="info-value">{{ patient.phone or 'Not provided' }}</span>
+      </div>
+      <div class="info-item">
         <span class="info-label">Current Ward</span>
         <span class="info-value">{{ patient.ward_name or 'Unassigned' }}</span>
       </div>
@@ -42,44 +52,49 @@
         <span class="info-label">Bed Number</span>
         <span class="info-value">{{ patient.bed }}</span>
       </div>
-      <div class="info-item">
-        <span class="info-label">Admission Date</span>
-        <span class="info-value">{{ patient.admission_datetime[:10] }}</span>
-      </div>
-      <div class="info-item">
-        <span class="info-label">Consultant</span>
-        <span class="info-value">{{ patient.doctor_name }}</span>
-      </div>
     </div>
   </div>
 </section>
 
+<!-- TABLE SECTION (clinical & admission details) -->
 <section class="content-section">
   <div class="data-card">
     <div class="data-card-header">
-      <h2>Treatment History</h2>
+      <h2>Clinical & Admission Details</h2>
     </div>
     <div class="table-wrapper">
       <table class="data-table">
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Treatment</th>
-            <th>Notes</th>
+            <th>Attribute</th>
+            <th>Value</th>
           </tr>
         </thead>
         <tbody>
-          {% for treatment in treatments %}
           <tr>
-            <td>{{ treatment.date }}</td>
-            <td><strong>{{ treatment.treatment }}</strong></td>
-            <td>{{ treatment.notes }}</td>
+            <td><strong>Admission Date & Time</strong></td>
+            <td>{{ patient.admission_datetime }}</td>
           </tr>
-          {% else %}
           <tr>
-            <td colspan="3" class="empty-text">No treatment history recorded.</td>
+            <td><strong>Consultant</strong></td>
+            <td>{{ patient.doctor_name or 'Unassigned' }}</td>
           </tr>
-          {% endfor %}
+          <tr>
+            <td><strong>Primary Diagnosis</strong></td>
+            <td>{{ patient.diagnosis }}</td>
+          </tr>
+          <tr>
+            <td><strong>Clinical Notes</strong></td>
+            <td>{{ patient.notes or 'No clinical notes recorded.' }}</td>
+          </tr>
+          <tr>
+            <td><strong>Date of Birth</strong></td>
+            <td>{{ patient.dob or 'Not recorded' }}</td>
+          </tr>
+          <tr>
+            <td><strong>Address</strong></td>
+            <td>{{ patient.address or 'Not recorded' }}</td>
+          </tr>
         </tbody>
       </table>
     </div>

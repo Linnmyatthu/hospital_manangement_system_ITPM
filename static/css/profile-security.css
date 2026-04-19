@@ -1,113 +1,142 @@
+/* PROFILE & SECURITY PAGE STYLES */
+
 /* CONTENT GRID */
 .content-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
-  gap: 1.2rem;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 /* CARD STYLES */
 .card {
   background: var(--bg-card);
-  border-radius: 18px;
-  padding: 1.2rem 1.4rem;
+  border-radius: 20px;
+  padding: 1.5rem;
   border: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-soft);
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .card-title {
-  margin: 0 0 0.3rem;
-  font-size: 1.05rem;
+  margin: 0 0 0.25rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.2px;
 }
 
 .card-text {
-  margin: 0 0 1rem;
+  margin: 0 0 1.25rem;
   font-size: 0.9rem;
   color: var(--text-muted);
+  line-height: 1.4;
 }
 
-/* PROFILE CARD */
+/* ACCOUNT INFO CARD (PROFILE) */
 .profile-card {
-  text-align: center;
-}
-
-.avatar-circle {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  margin: 0 auto 0.6rem;
-  background: var(--accent);
-  color: var(--text-invert);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 1.2rem;
-}
-
-.profile-name {
-  margin: 0 0 0.1rem;
-  font-size: 1.1rem;
-}
-
-.profile-role {
-  margin: 0 0 1rem;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
-
-.profile-form,
-.security-form {
   text-align: left;
-  margin-top: 0.5rem;
 }
 
 /* FORM FIELDS */
 .form-row {
-  margin-bottom: 0.9rem;
+  margin-bottom: 1rem;
   font-size: 0.9rem;
 }
 
 .form-row label {
   display: block;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+  color: var(--text-secondary);
 }
 
 input[type="text"],
 input[type="email"],
 input[type="password"] {
   width: 100%;
-  padding: 0.45rem 0.55rem;
-  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  border-radius: 12px;
   border: 1px solid var(--border-subtle);
   background: var(--bg-main);
   color: var(--text-main);
   font-size: 0.9rem;
+  transition: border 0.2s, box-shadow 0.2s;
 }
 
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
+}
+
+/* PASSWORD REVEAL WRAPPER */
+.password-reveal-wrap {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.password-reveal-wrap input {
+  flex: 1;
+}
+
+.reveal-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.reveal-btn:hover {
+  background: var(--accent);
+  color: var(--text-invert);
+  border-color: var(--accent);
+}
+
+.reveal-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* INLINE ROW (2FA) */
 .form-row-inline {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  margin: 1.25rem 0;
 }
 
 .label-inline {
   margin: 0;
   font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .hint {
   margin: 0.25rem 0 0;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
 }
 
-/* SWITCH TOGGLE */
+/* SWITCH TOGGLE (2FA) */
 .switch {
   position: relative;
   display: inline-block;
-  width: 38px;
-  height: 20px;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
 }
 
 .switch input {
@@ -123,7 +152,7 @@ input[type="password"] {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #c5d1c4;
+  background-color: #cbd5e1;
   transition: 0.2s;
   border-radius: 34px;
 }
@@ -131,8 +160,8 @@ input[type="password"] {
 .slider:before {
   position: absolute;
   content: "";
-  height: 14px;
-  width: 14px;
+  height: 18px;
+  width: 18px;
   left: 3px;
   bottom: 3px;
   background-color: white;
@@ -145,56 +174,128 @@ input:checked + .slider {
 }
 
 input:checked + .slider:before {
-  transform: translateX(18px);
+  transform: translateX(20px);
 }
 
 .slider.round {
   border-radius: 34px;
 }
 
-/* BUTTON & ALERTS */
+/* BUTTONS */
 .primary-btn {
-  margin-top: 0.3rem;
-  padding: 0.5rem 1.2rem;
-  border-radius: 999px;
+  margin-top: 0.5rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: 40px;
   border: none;
   background: var(--accent);
   color: var(--text-invert);
   font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
   width: 100%;
+  transition: background 0.2s, transform 0.05s;
 }
 
 .primary-btn:hover {
   background: var(--accent-soft);
+  transform: translateY(-1px);
 }
 
+.primary-btn:active {
+  transform: translateY(1px);
+}
+
+.secondary-btn {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: 40px;
+  padding: 0.7rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.secondary-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* LOGOUT SECTION */
+.logout-section {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.logout-divider {
+  margin: 1rem 0 1.2rem;
+  border: 0;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+.logout-btn {
+  width: auto;
+  padding: 0.6rem 1.5rem;
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.logout-btn:hover {
+  background: #fee2e2;
+  border-color: #f87171;
+  color: #b91c1c;
+}
+
+/* ALERT MESSAGES */
 .inline-alert {
-  margin-top: 0.7rem;
+  margin-top: 1rem;
   display: none;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   font-size: 0.85rem;
   color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.1);
+  padding: 0.6rem;
+  border-radius: 40px;
+}
+
+.inline-alert--error {
+  color: #dc2626;
+  background: #fee2e2;
 }
 
 .inline-alert-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--accent);
+  background: currentColor;
 }
 
 /* RESPONSIVE */
 @media (max-width: 960px) {
   .content-grid {
     grid-template-columns: 1fr;
+    gap: 1.2rem;
   }
-  
+
+  .card {
+    padding: 1.2rem;
+  }
+
   .form-row-inline {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
+    gap: 0.75rem;
+  }
+
+  .logout-btn {
+    width: 100%;
   }
 }

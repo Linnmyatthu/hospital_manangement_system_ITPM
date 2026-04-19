@@ -1,131 +1,135 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const reportPeriod = document.getElementById('reportPeriod');
+  const menuToggle = document.getElementById('menuToggle');
+  const sidebar = document.getElementById('sidebar');
+  const refreshBtn = document.getElementById('refreshBtn');
+  const lastUpdate = document.getElementById('lastUpdate');
+  const feedList = document.getElementById('feedList');
+  const wardList = document.getElementById('wardList');
 
-  const periodData = {
-    today: {
-      admissions: { value: '42', change: '+5% vs yesterday', trend: 'positive' },
-      discharges: { value: '38', change: '+2% vs yesterday', trend: 'positive' },
-      avgStay: { value: '4.2 days', change: 'No change', trend: 'neutral' },
-      occupancy: { value: '82%', change: '+2% vs yesterday', trend: 'negative' },
-      wardOccupancy: {
-        AMU: 91,
-        CCU: 86,
-        ICU: 90,
-        RESP: 73,
-        SSS: 71,
-        PAED: 70
-      }
-    },
-    week: {
-      admissions: { value: '324', change: '+12% vs last week', trend: 'positive' },
-      discharges: { value: '298', change: '+8% vs last week', trend: 'positive' },
-      avgStay: { value: '4.2 days', change: 'No change', trend: 'neutral' },
-      occupancy: { value: '82%', change: '+5% vs last week', trend: 'negative' },
-      wardOccupancy: {
-        AMU: 91,
-        CCU: 86,
-        ICU: 90,
-        RESP: 73,
-        SSS: 71,
-        PAED: 70
-      }
-    },
-    month: {
-      admissions: { value: '1,428', change: '+18% vs last month', trend: 'positive' },
-      discharges: { value: '1,356', change: '+14% vs last month', trend: 'positive' },
-      avgStay: { value: '4.5 days', change: '+0.3 days', trend: 'negative' },
-      occupancy: { value: '85%', change: '+7% vs last month', trend: 'negative' },
-      wardOccupancy: {
-        AMU: 93,
-        CCU: 89,
-        ICU: 92,
-        RESP: 78,
-        SSS: 75,
-        PAED: 73
-      }
-    },
-    year: {
-      admissions: { value: '18,642', change: '+22% vs last year', trend: 'positive' },
-      discharges: { value: '17,894', change: '+19% vs last year', trend: 'positive' },
-      avgStay: { value: '4.8 days', change: '+0.6 days', trend: 'negative' },
-      occupancy: { value: '88%', change: '+10% vs last year', trend: 'negative' },
-      wardOccupancy: {
-        AMU: 95,
-        CCU: 92,
-        ICU: 94,
-        RESP: 82,
-        SSS: 79,
-        PAED: 76
-      }
-    }
-  };
+  const admissionsEl = document.getElementById('admissionsCount');
+  const dischargesEl = document.getElementById('dischargesCount');
+  const alertsEl = document.getElementById('alertsCount');
+  const staffEl = document.getElementById('staffCount');
 
-  function updateMetrics(period) {
-    const data = periodData[period];
-
-    const metricCards = document.querySelectorAll('.metric-card');
-    if (metricCards[0]) {
-      metricCards[0].querySelector('.metric-value').textContent = data.admissions.value;
-      const change1 = metricCards[0].querySelector('.metric-change');
-      change1.textContent = data.admissions.change;
-      change1.className = 'metric-change ' + data.admissions.trend;
-    }
-
-    if (metricCards[1]) {
-      metricCards[1].querySelector('.metric-value').textContent = data.discharges.value;
-      const change2 = metricCards[1].querySelector('.metric-change');
-      change2.textContent = data.discharges.change;
-      change2.className = 'metric-change ' + data.discharges.trend;
-    }
-
-    if (metricCards[2]) {
-      metricCards[2].querySelector('.metric-value').textContent = data.avgStay.value;
-      const change3 = metricCards[2].querySelector('.metric-change');
-      change3.textContent = data.avgStay.change;
-      change3.className = 'metric-change ' + data.avgStay.trend;
-    }
-
-    if (metricCards[3]) {
-      metricCards[3].querySelector('.metric-value').textContent = data.occupancy.value;
-      const change4 = metricCards[3].querySelector('.metric-change');
-      change4.textContent = data.occupancy.change;
-      change4.className = 'metric-change ' + data.occupancy.trend;
-    }
-
-    updateWardOccupancy(data.wardOccupancy);
+  if (menuToggle && sidebar) {
+    menuToggle.addEventListener('click', () => {
+      const isHidden = window.getComputedStyle(sidebar).display === 'none';
+      sidebar.style.display = isHidden ? 'flex' : 'none';
+    });
   }
 
-  function updateWardOccupancy(occupancy) {
-    const barItems = document.querySelectorAll('.bar-item');
+  function getUKTimeString(date) {
+    return date.toLocaleTimeString('en-GB', {
+      timeZone: 'Europe/London',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  }
 
-    barItems.forEach(item => {
-      const label = item.querySelector('.bar-label').textContent;
-      const fill = item.querySelector('.bar-fill');
-      const value = item.querySelector('.bar-value');
+  async function refreshLiveData() {
+    try {
+      const statsRes = await fetch('/api/live/stats');
+      const stats = await statsRes.json();
+      admissionsEl.textContent = stats.admissions_today;
+      dischargesEl.textContent = stats.discharges_today;
+      alertsEl.textContent = stats.critical_alerts;
+      staffEl.textContent = stats.staff_on_duty;
 
-      if (occupancy[label]) {
-        const percent = occupancy[label];
-        fill.style.width = percent + '%';
-        value.textContent = percent + '%';
+      const feedRes = await fetch('/api/live/feed');
+      const activities = await feedRes.json();
+      feedList.innerHTML = '';
 
-        fill.className = 'bar-fill';
+      if (activities.length === 0) {
+        const emptyItem = document.createElement('div');
+        emptyItem.className = 'feed-item';
+        emptyItem.innerHTML = '<p class="feed-text">No recent activity today</p>';
+        feedList.appendChild(emptyItem);
+      } else {
+        activities.forEach(act => {
+          const item = document.createElement('div');
+          item.className = `feed-item ${act.type}-item`;
+
+          let badgeClass = '';
+          let badgeText = '';
+
+          switch (act.type) {
+            case 'admission':
+              badgeClass = 'admission-badge';
+              badgeText = 'Admission';
+              break;
+            case 'discharge':
+              badgeClass = 'discharge-badge';
+              badgeText = 'Discharge';
+              break;
+            case 'treatment':
+              badgeClass = 'treatment-badge';
+              badgeText = 'Treatment';
+              break;
+            case 'alert':
+              badgeClass = 'alert-badge';
+              badgeText = 'Alert';
+              break;
+            default:
+              badgeClass = 'info-badge';
+              badgeText = act.type.charAt(0).toUpperCase() + act.type.slice(1);
+          }
+
+          const content = act.description ? `<p class="feed-text">${act.description}</p>` : '<p class="feed-text">No details</p>';
+
+          item.innerHTML = `
+            <div class="feed-time">${act.time}</div>
+            <div class="feed-content">
+              <div class="feed-badge ${badgeClass}">${badgeText}</div>
+              ${content}
+            </div>
+          `;
+          feedList.appendChild(item);
+        });
+      }
+
+      const wardsRes = await fetch('/api/live/wards');
+      const wards = await wardsRes.json();
+      wardList.innerHTML = '';
+      wards.forEach(ward => {
+        const percent = ward.percent;
+        let meterClass = 'ok-meter';
+        let textClass = 'ok-text';
         if (percent >= 90) {
-          fill.classList.add('critical');
-        } else if (percent >= 85) {
-          fill.classList.add('warning');
-        } else {
-          fill.classList.add('ok');
+          meterClass = 'critical-meter';
+          textClass = 'critical-text';
+        } else if (percent >= 80) {
+          meterClass = 'warning-meter';
+          textClass = 'warning-text';
         }
-      }
-    });
+
+        const wardItem = document.createElement('div');
+        wardItem.className = 'ward-item';
+        wardItem.innerHTML = `
+          <div class="ward-info">
+            <h3>${ward.code || ward.name}</h3>
+            <p>${ward.occupied} / ${ward.capacity} beds</p>
+          </div>
+          <div class="ward-meter ${meterClass}">
+            <div class="meter-fill" style="width: ${percent}%;"></div>
+          </div>
+          <span class="ward-percent ${textClass}">${percent}%</span>
+        `;
+        wardList.appendChild(wardItem);
+      });
+
+      const now = new Date();
+      lastUpdate.textContent = getUKTimeString(now);
+    } catch (err) {
+      // Silently handle fetch errors
+    }
   }
 
-  if (reportPeriod) {
-    reportPeriod.addEventListener('change', () => {
-      const period = reportPeriod.value;
-      updateMetrics(period);
-    });
+  refreshLiveData();
 
-    updateMetrics(reportPeriod.value);
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', refreshLiveData);
   }
+
+  setInterval(refreshLiveData, 30000);
 });

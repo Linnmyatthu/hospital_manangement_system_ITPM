@@ -1,46 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('teamSearch');
-  const teamFilter = document.getElementById('teamFilter');
   const table = document.getElementById('teamsTable');
   const noResults = document.getElementById('teamsNoResults');
 
   function applyFilter() {
     if (!table) return;
-
     const query = (searchInput?.value || '').toLowerCase().trim();
-    const teamValue = teamFilter ? teamFilter.value : 'all';
-
     const rows = table.tBodies[0].rows;
     let visible = 0;
-
     Array.from(rows).forEach(row => {
-      const name = row.cells[0].textContent.toLowerCase();
-      const grade = row.cells[1].textContent.toLowerCase();
-      const specialty = row.cells[2].textContent.toLowerCase();
-      const team = row.cells[3].textContent;
-
-      const matchesText =
-        query === '' ||
-        name.includes(query) ||
-        grade.includes(query) ||
-        specialty.includes(query);
-
-      const matchesTeam =
-        teamValue === 'all' || team === teamValue;
-
-      const show = matchesText && matchesTeam;
-      row.style.display = show ? '' : 'none';
-      if (show) visible++;
+      const teamName = row.cells[0].textContent.toLowerCase();
+      const leadConsultant = row.cells[1].textContent.toLowerCase();
+      const matchesText = query === '' || teamName.includes(query) || leadConsultant.includes(query);
+      row.style.display = matchesText ? '' : 'none';
+      if (matchesText) visible++;
     });
-
-    if (noResults) {
-      noResults.style.display = visible === 0 ? 'block' : 'none';
-    }
+    if (noResults) noResults.style.display = visible === 0 ? 'block' : 'none';
   }
 
   if (searchInput) searchInput.addEventListener('input', applyFilter);
-  if (teamFilter) teamFilter.addEventListener('change', applyFilter);
-
   applyFilter();
 });
 

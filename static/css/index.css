@@ -254,7 +254,7 @@ body {
 
 /* CARD ROW */
 .card-row {
-  display: grid;
+  display: flex;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
   margin-bottom: 1.3rem;
