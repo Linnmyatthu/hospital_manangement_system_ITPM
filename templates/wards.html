@@ -21,6 +21,7 @@
     <a href="/ward" class="primary-btn">View Ward Details</a>
     {% if user_role == 'admin' %}
     <a href="#add-ward-modal" class="primary-btn" onclick="openAddWardModal()">+ Add New Ward</a>
+    <button id="exportWardsBtn" class="primary-btn">📊 Export to CSV</button>
     {% endif %}
   </div>
 </section>
@@ -128,7 +129,6 @@
 </section>
 <br>
 
-<!-- Add Ward Modal -->
 <div id="addWardModal" class="modal" style="display: none;">
   <div class="modal-overlay" onclick="closeAddWardModal()"></div>
   <div class="modal-dialog">
@@ -197,7 +197,6 @@
   </div>
 </div>
 
-<!-- Edit Ward Modal -->
 <div id="editWardModal" class="modal" style="display: none;">
   <div class="modal-overlay" onclick="closeEditWardModal()"></div>
   <div class="modal-dialog">
@@ -266,7 +265,6 @@
   </div>
 </div>
 
-<!-- Delete Ward Modal -->
 <div id="deleteWardModal" class="modal" style="display: none;">
   <div class="modal-overlay" onclick="closeDeleteModal()"></div>
   <div class="modal-dialog" style="max-width: 400px;">
@@ -292,4 +290,23 @@
 
 {% block extra_js %}
 <script src="/static/js/wards.js"></script>
+<script>
+  document.getElementById('exportWardsBtn')?.addEventListener('click', function () {
+    const rows = [];
+    const headers = Array.from(document.querySelectorAll('#wardsTable thead th')).map(th => th.innerText.trim());
+    rows.push(headers);
+    document.querySelectorAll('#wardsTable tbody tr').forEach(tr => {
+      const cells = Array.from(tr.querySelectorAll('td'));
+      const row = cells.slice(0, -1).map(td => td.innerText.trim());
+      rows.push(row);
+    });
+    const csv = rows.map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'wards_export.csv';
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+</script>
 {% endblock %}

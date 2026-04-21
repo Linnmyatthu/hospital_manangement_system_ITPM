@@ -20,6 +20,7 @@
   <div class="action-buttons-container">
     {% if user_role == 'admin' %}
     <a href="/manage-doctors" class="primary-btn">Manage Doctor</a>
+    <button id="exportTeamsBtn" class="primary-btn">📊 Export to CSV</button>
     {% endif %}
   </div>
 </section>
@@ -90,4 +91,23 @@
 
 {% block extra_js %}
 <script src="/static/js/teams.js"></script>
+<script>
+  document.getElementById('exportTeamsBtn')?.addEventListener('click', function () {
+    const rows = [];
+    const headers = Array.from(document.querySelectorAll('#teamsTable thead th')).map(th => th.innerText.trim());
+    rows.push(headers);
+    document.querySelectorAll('#teamsTable tbody tr').forEach(tr => {
+      const cells = Array.from(tr.querySelectorAll('td'));
+      const row = cells.slice(0, -1).map(td => td.innerText.trim());
+      rows.push(row);
+    });
+    const csv = rows.map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'teams_export.csv';
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+</script>
 {% endblock %}

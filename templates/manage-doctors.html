@@ -9,8 +9,8 @@
 {% block active_teams %}active{% endblock %}
 
 {% block header %}
-<a href="/teams" class="back-link">← Back to teams</a>
-<h1 class="page-title">Manage doctors</h1>
+<a href="/teams" class="back-link primary-btn" style="text-decoration: none;">← Back to teams</a>
+<h1 class="page-title">Doctors</h1>
 <p class="page-subtitle">Add, edit, and view all medical staff across specialties and grades.</p>
 {% endblock %}
 
@@ -44,7 +44,10 @@
       <p>Search by name, specialty, or grade to find medical staff.</p>
     </div>
     <div class="table-actions">
+      {% if user_role == 'admin' %}
       <button class="primary-btn" id="addDoctorBtn">Add new doctor</button>
+      <button class="primary-btn" id="exportDoctorsBtn">📊 Export to CSV</button>
+      {% endif %}
       <div class="search-wrapper">
         <span class="search-icon">🔍</span>
         <input type="text" id="doctorSearch" placeholder="Search by name, specialty or grade..." autocomplete="off" />
@@ -87,7 +90,13 @@
           <td>{{ doctor.ward_name or '-' }}</td>
           <td>{{ doctor.pager or '-' }}</td>
           <td>{{ doctor.email or '-' }}</td>
-          <td><button class="action-btn edit-btn" data-id="{{ doctor.id }}">Edit</button></td>
+          <td>
+            <button class="btn-action btn-edit" title="Edit" data-id="{{ doctor.id }}">✏️</button>
+            {% if user_role == 'admin' %}
+            <button class="btn-action btn-delete" title="Delete" data-id="{{ doctor.id }}"
+              data-name="{{ doctor.name }}">🗑️</button>
+            {% endif %}
+          </td>
         </tr>
         {% endfor %}
       </tbody>
@@ -161,8 +170,90 @@
     </form>
   </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteDoctorModal" class="modal" style="display: none;">
+  <div class="modal-overlay" onclick="closeDeleteModal()"></div>
+  <div class="modal-dialog" style="max-width: 400px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirm Delete</h3>
+        <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong id="deleteDoctorName"></strong>?</p>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">This action cannot be undone.</p>
+        <p id="deleteErrorMsg" style="color: #d32f2f; display: none;"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+        <button type="button" class="btn-danger" id="confirmDeleteBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
 <script src="/static/js/manage-doctors.js"></script>
+<script>
+  document.getElementById('exportDoctorsBtn')?.addEventListener('click', function () {
+    const rows = [];
+    const headers = Array.from(document.querySelectorAll('#doctorsTable thead th')).map(th => th.innerText.trim());
+    rows.push(headers);
+    document.querySelectorAll('#doctorsTable tbody tr').forEach(tr => {
+      const row = Array.from(tr.querySelectorAll('td')).slice(0, -1).map(td => td.innerText.trim());
+      rows.push(row);
+    });
+    const csv = rows.map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'doctors_export.csv';
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+
+  // Delete doctor logic
+  let currentDeleteDoctorId = null;
+
+  function openDeleteModal(doctorId, doctorName) {
+    currentDeleteDoctorId = doctorId;
+    document.getElementById('deleteDoctorName').innerText = doctorName;
+    document.getElementById('deleteErrorMsg').style.display = 'none';
+    document.getElementById('deleteDoctorModal').style.display = 'flex';
+  }
+
+  function closeDeleteModal() {
+    document.getElementById('deleteDoctorModal').style.display = 'none';
+    currentDeleteDoctorId = null;
+  }
+
+  document.getElementById('confirmDeleteBtn')?.addEventListener('click', async function () {
+    if (!currentDeleteDoctorId) return;
+    try {
+      const response = await fetch(`/api/doctors/${currentDeleteDoctorId}`, { method: 'DELETE' });
+      const result = await response.json();
+      if (response.ok) {
+        location.reload();
+      } else {
+        document.getElementById('deleteErrorMsg').innerText = result.error || 'Failed to delete doctor.';
+        document.getElementById('deleteErrorMsg').style.display = 'block';
+      }
+    } catch (err) {
+      document.getElementById('deleteErrorMsg').innerText = 'Network error. Please try again.';
+      document.getElementById('deleteErrorMsg').style.display = 'block';
+    }
+  });
+
+  // Attach delete button listeners after table loads (delegation)
+  document.querySelector('#doctorsTable tbody')?.addEventListener('click', (e) => {
+    const deleteBtn = e.target.closest('.delete-btn');
+    if (deleteBtn) {
+      const doctorId = deleteBtn.getAttribute('data-id');
+      const doctorName = deleteBtn.getAttribute('data-name');
+      openDeleteModal(doctorId, doctorName);
+    }
+  });
+</script>
 {% endblock %}
