@@ -1,7 +1,5 @@
 # 🏥 Hospital Management System
 
-Website : https://hospital-manangement-system.onrender.com
-
 ## 🔐 Default Login Credentials
 
 | Role | Email | Password |
