@@ -1,19 +1,10 @@
 from flask import (
-    Flask,
-    render_template,
-    send_from_directory,
-    request,
-    redirect,
-    url_for,
-    jsonify,
-    make_response,
-    session       
+    Flask, render_template, send_from_directory, request, redirect,
+    url_for, jsonify, session
 )
 from functools import wraps
 import os
 import sqlite3
-import csv           
-from io import StringIO 
 from datetime import datetime, timedelta, date
 import random
 
@@ -47,7 +38,7 @@ try:
 except OSError:
     pass
 
-DATABASE_PATH = "/tmp/hospital.db"
+DATABASE_PATH = os.path.join(app.instance_path, "hospital.db")
 
 def get_db_connection():
     conn = sqlite3.connect(DATABASE_PATH)
@@ -884,40 +875,10 @@ def team_detail(team_id):
     )
 
 @app.route("/reports")
+@login_required
 def reports_page():
     stats = get_dashboard_stats()
     return render_template("reports.html", stats=stats)
-
-@app.route("/reports/generate")
-def generate_report():
-    # Admin-only check
-    if session.get('role') != 'admin':
-        return jsonify({"error": "Unauthorized"}), 403
-
-    conn = get_db_connection()
-    patients = conn.execute('''
-        SELECT p.id, p.name, p.age, p.gender, p.diagnosis, p.status, p.admission_datetime, w.name as ward_name
-        FROM patients p
-        LEFT JOIN wards w ON p.ward_id = w.id
-    ''').fetchall()
-    conn.close()
-
-    si = StringIO()
-    cw = csv.writer(si)
-    cw.writerow(['Patient ID', 'Name', 'Age', 'Gender', 'Ward', 'Diagnosis', 'Status', 'Admission Date'])
-    
-    for p in patients:
-        cw.writerow([
-            f"P{p['id']:03d}", p['name'], p['age'], p['gender'], 
-            p['ward_name'], p['diagnosis'], p['status'], p['admission_datetime']
-        ])
-
-    output = make_response(si.getvalue())
-    output.headers["Content-Disposition"] = f"attachment; filename=hospital_report_{date.today()}.csv"
-    output.headers["Content-type"] = "text/csv"
-    
-    log_activity("report_generation", "patients", None, "Admin generated a full patient CSV report")
-    return output
 
 @app.route("/notifications")
 @login_required
@@ -1080,41 +1041,6 @@ def add_doctor():
     conn.close()
     log_activity('create', 'doctors', doctor_id, f"New doctor added: {name}")
     return jsonify({'success': True, 'doctor_id': doctor_id}), 201
-
-@app.route("/api/doctors/<int:doctor_id>", methods=["DELETE"])
-@login_required
-@role_required(['admin'])
-def delete_doctor(doctor_id):
-    conn = get_db_connection()
-    
-    # Check if doctor is assigned to any active patients
-    patient_count = conn.execute(
-        "SELECT COUNT(*) FROM patients WHERE doctor_id = ? AND status = 'Active'",
-        (doctor_id,)
-    ).fetchone()[0]
-    
-    if patient_count > 0:
-        conn.close()
-        return jsonify({
-            "error": f"Cannot delete doctor: they are the responsible clinician for {patient_count} active patient(s)."
-        }), 400
-    
-    # Optional: also check for patients in any status (Discharged as well) – decide
-    # We'll also prevent deletion if doctor is lead consultant of a ward? Not necessary.
-    
-    # Get doctor name for logging
-    doctor = conn.execute("SELECT name FROM doctors WHERE id = ?", (doctor_id,)).fetchone()
-    if not doctor:
-        conn.close()
-        return jsonify({"error": "Doctor not found"}), 404
-    
-    # Delete the doctor
-    conn.execute("DELETE FROM doctors WHERE id = ?", (doctor_id,))
-    conn.commit()
-    conn.close()
-    
-    log_activity('delete', 'doctors', doctor_id, f"Doctor deleted: {doctor['name']}")
-    return jsonify({"success": True})
 
 @app.route("/api/teams/list")
 @login_required

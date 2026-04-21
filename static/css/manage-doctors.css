@@ -29,27 +29,6 @@
     background: var(--accent-soft);
 }
 
-.btn-action {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--border-subtle);
-  background: var(--bg-main);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  font-size: 1rem;
-  margin: 0 2px;
-  transition: all 0.2s ease;
-}
-
-.btn-action:hover {
-  transform: scale(1.1);
-  border-color: var(--accent-soft);
-}
-
 /* SUMMARY CARDS */
 .summary-row {
   display: grid;
