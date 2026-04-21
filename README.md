@@ -1,4 +1,3 @@
-Website Link : https://hospital-manangement-system-red.vercel.app/login
 
 # 🏥 Hospital Management System 
 
