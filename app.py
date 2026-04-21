@@ -47,7 +47,7 @@ try:
 except OSError:
     pass
 
-DATABASE_PATH = os.path.join(app.instance_path, "hospital.db")
+DATABASE_PATH = "/tmp/hospital.db"
 
 def get_db_connection():
     conn = sqlite3.connect(DATABASE_PATH)
