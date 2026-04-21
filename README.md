@@ -13,7 +13,6 @@
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/Linnmyatthu/hospital_manangement_system_ITPM.git
-cd hospital-management-system
 ```
 
 ### 2. Install Flask
