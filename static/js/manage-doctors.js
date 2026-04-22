@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  document.querySelectorAll('.edit-btn').forEach(btn => {
+  document.querySelectorAll('.btn-edit').forEach(btn => {
     btn.addEventListener('click', () => {
       const doctorId = btn.dataset.id;
       if (!doctorId) return;
