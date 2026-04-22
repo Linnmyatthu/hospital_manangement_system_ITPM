@@ -248,7 +248,7 @@
 
   // Attach delete button listeners after table loads (delegation)
   document.querySelector('#doctorsTable tbody')?.addEventListener('click', (e) => {
-    const deleteBtn = e.target.closest('.delete-btn');
+    const deleteBtn = e.target.closest('.btn-delete');
     if (deleteBtn) {
       const doctorId = deleteBtn.getAttribute('data-id');
       const doctorName = deleteBtn.getAttribute('data-name');
